@@ -304,6 +304,10 @@
     .pattern-step small { display: block; color: var(--muted); font-size: 13px; }
     .practice-caution { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 0 0 25px; }
     .practice-action-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .practice-options { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px; }
+    .hold-skip-option { display:inline-flex; align-items:center; gap:9px; min-height:44px; padding:8px 12px; border:1px solid var(--line); border-radius:12px; color:var(--ink-2); font-size:13px; cursor:pointer; }
+    .hold-skip-option input { width:17px; height:17px; accent-color:var(--action); }
+    .hold-skip-note { flex-basis:100%; margin:0; color:var(--muted); font-size:12px; line-height:1.4; }
     .practice-stage { min-height: 550px; border-radius: 36px; background: radial-gradient(ellipse at 50% 48%, #d4e9df 0%, #e5efe8 43%, #edf3ed 72%); display: grid; place-items: center; position: relative; overflow: hidden; }
     html[data-theme="dark"] .practice-stage { background: radial-gradient(ellipse at 50% 48%, #244f43 0%, #18372f 48%, #142b25 75%); }
     html[data-theme="dark"] .session-topline, html[data-theme="dark"] .session-message { color: rgba(232,242,237,.84); }
@@ -648,6 +652,7 @@
         <div class="practice-use"><strong>GOOD FOR</strong><p id="practice-use">A gentle moment to pause and notice your breathing.</p></div>
         <p class="practice-caution" id="practice-caution">Keep the counts comfortable. Return to normal breathing if you feel strained or light-headed.</p>
         <div class="practice-action-row" id="practice-start-row"><button class="primary-button" id="start-practice" type="button"><span>Start practice</span><span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button><label class="duration-select-label"><span class="sr-only">Session length</span><select class="duration-select" id="session-duration"><option value="1">1 minute</option><option value="3" selected>3 minutes</option><option value="5">5 minutes</option></select></label></div>
+        <div class="practice-options" id="practice-options"><label class="hold-skip-option"><input type="checkbox" id="skip-holds"> <span>Skip timed holds</span></label><p class="hold-skip-note">Removes timed pauses from this practice. You can still breathe naturally between phases.</p></div>
 
       </div>
       <div class="practice-stage" id="practice-stage" data-phase="rest">
@@ -953,7 +958,7 @@
       $('practice-description').textContent=selectedExercise.description;
       $('practice-use').textContent=selectedExercise.bestFor;
       $('practice-meta').innerHTML='<span class="meta-chip">'+selectedExercise.level+'</span><span class="meta-chip">'+selectedExercise.minutes+'</span><span class="meta-chip">'+selectedExercise.pattern+'</span>';
-      $('pattern-flow').innerHTML=(selectedExercise.phases || [['Notice the breath',0,'inhale']]).map((p,i)=>'<span class="pattern-step">'+p[0]+'<small>'+(p[1] ? p[1]+' seconds' : 'No set count')+'</small></span>').join('<span aria-hidden="true" style="color:var(--muted-2)">→</span>');
+      $('skip-holds').checked=false; renderPracticePattern();
       $('practice-caution').textContent=selectedExercise.caution;
       $('practice-stage').classList.remove('session-active','session-complete'); $('practice-stage').dataset.phase='rest'; $('practice-phase').textContent='Ready when you are'; $('practice-phase-count').textContent='Choose a duration, then start'; $('session-message').textContent='Let the breath stay easy.';
       $('session-mode').textContent='Ready to begin'; $('session-clock').textContent= $('session-duration').value+':00';
@@ -979,11 +984,20 @@
 
     function practiceElapsed() { return practiceElapsedBeforePause + (practicePaused ? 0 : performance.now()-practiceStartedAt); }
     function formatTime(ms) { const s=Math.max(0,Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+    function getPracticePhases() {
+      if (!selectedExercise || !Array.isArray(selectedExercise.phases)) return null;
+      return $('skip-holds').checked ? selectedExercise.phases.filter(phase=>phase[2]!=='hold') : selectedExercise.phases;
+    }
+    function renderPracticePattern() {
+      const phases=getPracticePhases();
+      $('pattern-flow').innerHTML=(phases && phases.length ? phases : [['Notice the breath',0,'rest']]).map(p=>'<span class="pattern-step">'+p[0]+'<small>'+(p[1] ? p[1]+' seconds' : 'No set count')+'</small></span>').join('<span aria-hidden="true" style="color:var(--muted-2)">→</span>');
+      if($('skip-holds').checked) $('session-message').textContent='Timed holds are skipped. Keep each breath comfortable.';
+    }
     function phaseForElapsed(elapsed) {
-      if (!selectedExercise || !Array.isArray(selectedExercise.phases) || !selectedExercise.phases.length) {
+      const phases=getPracticePhases();
+      if (!phases || !phases.length) {
         return {label:'Notice the breath',seconds:5,phase:'rest',phaseIndex:-1,remain:null,cycle:Math.floor(elapsed/10000)+1,phaseStart:0};
       }
-      const phases=selectedExercise.phases;
       const cycleDuration=phases.reduce((sum,p)=>sum+Math.max(0,Number(p[1])||0),0)*1000;
       if (!Number.isFinite(cycleDuration) || cycleDuration<=0) {
         return {label:'Notice the breath',seconds:5,phase:'rest',phaseIndex:-1,remain:null,cycle:1,phaseStart:0};
@@ -1004,8 +1018,8 @@
       const elapsed=Math.min(practiceElapsed(),practiceDurationMs); const phase=phaseForElapsed(elapsed);
       $('practice-stage').dataset.phase=phase.phase; $('practice-stage').style.setProperty('--phase-duration',phase.seconds+'s');
       $('practice-phase').textContent=phase.label;
-      $('practice-phase-count').textContent=selectedExercise.phases ? 'Follow a comfortable rhythm' : 'No count to follow';
-      $('session-mode').textContent=selectedExercise.phases ? 'Cycle '+phase.cycle : 'Gentle observation';
+      $('practice-phase-count').textContent=getPracticePhases()?.length ? 'Follow a comfortable rhythm' : 'No count to follow';
+      $('session-mode').textContent=getPracticePhases()?.length ? 'Cycle '+phase.cycle : 'Gentle observation';
       $('session-clock').textContent=formatTime(practiceDurationMs-elapsed);
       $('session-message').textContent=phase.remain ? phase.remain+' seconds in this phase' : 'Notice the breath without changing it';
       if(phase.phaseIndex!==practiceLastPhaseIndex){ practiceLastPhase=phase.phase; practiceLastPhaseIndex=phase.phaseIndex; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); playPhaseCue(phase.phase); speakPhase(phase.label); }
@@ -1029,6 +1043,7 @@
     $('session-pause').addEventListener('click',togglePracticePause);
     $('session-restart').addEventListener('click',restartPractice);
     $('session-duration').addEventListener('change',()=>{ if(practiceState==='ready') $('session-clock').textContent=$('session-duration').value+':00'; });
+    $('skip-holds').addEventListener('change',()=>{ if(practiceState==='ready') renderPracticePattern(); });
     $('session-fullscreen').addEventListener('click',async()=>{ try { if(!document.fullscreenElement) await $('practice-stage').requestFullscreen(); else await document.exitFullscreen(); } catch(_) {} });
     updatePersonalCounts();
     renderExercises();
