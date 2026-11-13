@@ -237,7 +237,7 @@
     .search-box input::placeholder { color: var(--muted-2); }
     .result-count { color: var(--muted); font-size: 13px; white-space: nowrap; }
     .exercise-list { border-top: 1px solid var(--line-strong); }
-    .exercise-row { display: grid; grid-template-columns: 35px minmax(170px,1.35fr) minmax(115px,.75fr) 86px 112px; align-items: center; gap: 17px; min-height: 91px; border-bottom: 1px solid var(--line); padding: 15px 5px; transition: background .2s ease; }
+    .exercise-row { display: grid; grid-template-columns: 35px minmax(170px,1.35fr) minmax(115px,.75fr) 86px 40px 112px; align-items: center; gap: 17px; min-height: 91px; border-bottom: 1px solid var(--line); padding: 15px 5px; transition: background .2s ease; }
     .exercise-row:hover { background: color-mix(in srgb, var(--paper-2) 60%, transparent); }
     .exercise-index { color: var(--muted-2); font-size: 13px; font-variant-numeric: tabular-nums; }
     .exercise-name { font-size: 16px; font-weight: 650; letter-spacing: -.025em; margin: 0 0 3px; }
@@ -246,6 +246,9 @@
     .pattern-segment { height: 5px; min-width: 10px; border-radius: 99px; background: var(--sea); opacity: .9; }
     .pattern-segment.hold { background: var(--peach); }
     .exercise-tag { display: inline-flex; width: max-content; max-width: 100%; border-radius: 999px; padding: 5px 9px; background: var(--paper-2); color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .favorite-toggle { width:40px; height:40px; display:inline-grid; place-items:center; justify-self:end; border:1px solid var(--line); border-radius:50%; background:transparent; color:var(--muted); cursor:pointer; }
+    .favorite-toggle:hover, .favorite-toggle[aria-pressed="true"] { color:#b45f68; border-color:color-mix(in srgb, #b45f68 45%, var(--line)); background:color-mix(in srgb, #b45f68 9%, transparent); }
+    .favorite-toggle svg { width:18px; height:18px; }
     .row-action { min-height: 44px; justify-self: end; display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--action); font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background .18s ease, border-color .18s ease; }
     .row-action:hover { background: var(--paper-2); border-color: var(--action); }
     .row-action svg { width: 13px; height: 13px; }
@@ -556,6 +559,10 @@
         <div class="library-topline"><div><p class="section-index">The exercise library</p><h2 id="library-title">All breathing exercises.</h2></div><p>Use the search or filters to find a pattern. Choose a comfortable pace rather than trying to match a number.</p></div>
         <div class="library-shell">
           <aside class="filter-rail" aria-label="Filter exercises by category"><h3>Browse categories</h3><div class="filter-list" id="filter-list">
+            <button class="filter-button" type="button" data-view="All" aria-pressed="true"><span>All exercises</span><span class="filter-count" id="count-all">24</span></button>
+            <button class="filter-button" type="button" data-view="Favorites" aria-pressed="false"><span>Favourites</span><span class="filter-count" id="count-favorites">0</span></button>
+            <button class="filter-button" type="button" data-view="Recent" aria-pressed="false"><span>Recently practised</span><span class="filter-count" id="count-recent">0</span></button>
+            <span class="filter-divider" aria-hidden="true"></span>
             <button class="filter-button" type="button" data-filter="All" aria-pressed="true"><span>All exercises</span><span class="filter-count" id="count-all">24</span></button>
             <button class="filter-button" type="button" data-filter="Settle" aria-pressed="false"><span>Settle</span><span class="filter-count">5</span></button>
             <button class="filter-button" type="button" data-filter="Focus" aria-pressed="false"><span>Focus</span><span class="filter-count">4</span></button>
@@ -646,6 +653,15 @@
 
     const $ = (id) => document.getElementById(id);
     let currentFilter = 'All';
+    let currentView = 'All';
+    const STORAGE_KEYS = { favorites:'breathe:v1:favorites', recent:'breathe:v1:recent' };
+    function readStored(key, fallback) { try { const value=JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch (_) { return fallback; } }
+    let favoriteIds = new Set(Array.isArray(readStored(STORAGE_KEYS.favorites,[])) ? readStored(STORAGE_KEYS.favorites,[]) : []);
+    let recentPractices = Array.isArray(readStored(STORAGE_KEYS.recent,[])) ? readStored(STORAGE_KEYS.recent,[]) : [];
+    function saveFavorites() { try { localStorage.setItem(STORAGE_KEYS.favorites,JSON.stringify([...favoriteIds])); } catch (_) { announceStorageIssue(); } }
+    function saveRecent() { try { localStorage.setItem(STORAGE_KEYS.recent,JSON.stringify(recentPractices.slice(0,20))); } catch (_) { announceStorageIssue(); } }
+    function announceStorageIssue() { const status=$('storage-status'); if(status) status.textContent='Your browser could not save this change. Check available site storage.'; }
+    function recordRecent(id) { recentPractices=[{id,at:Date.now()},...recentPractices.filter(item=>item.id!==id)].slice(0,20); saveRecent(); updatePersonalCounts(); }
     let selectedExercise = null;
     let practiceReturnFocus = null;
     let introTimer = null;
@@ -662,23 +678,42 @@
       const max = Math.max(...phases.map(p=>p[1]));
       return '<span class="exercise-pattern" aria-label="'+phases.map(p=>p[0]+' '+p[1]+' seconds').join(', ')+'">'+phases.map(p=>'<i class="pattern-segment '+(p[2]==='hold'?'hold':'')+'" style="width:'+Math.max(10,Math.round(p[1]/max*25))+'px"></i>').join('')+'</span>';
     }
+    function updatePersonalCounts() {
+      $('count-favorites').textContent=String(favoriteIds.size);
+      $('count-recent').textContent=String(recentPractices.length);
+    }
     function renderExercises() {
       const term = $('exercise-search').value.trim().toLowerCase();
-      const filtered = exercises.filter(ex => (currentFilter === 'All' || ex.category === currentFilter) && (!term || (ex.name+' '+ex.description+' '+ex.category+' '+ex.pattern).toLowerCase().includes(term)));
+      let source = exercises;
+      if (currentView==='Favorites') source=exercises.filter(ex=>favoriteIds.has(ex.id));
+      if (currentView==='Recent') source=recentPractices.map(item=>exercises.find(ex=>ex.id===item.id)).filter(Boolean);
+      const filtered = source.filter(ex => (currentFilter === 'All' || ex.category === currentFilter) && (!term || (ex.name+' '+ex.description+' '+ex.category+' '+ex.pattern).toLowerCase().includes(term)));
       $('exercise-list').innerHTML = filtered.map((ex) => {
         const idx = String(exercises.indexOf(ex)+1).padStart(2,'0');
-        return `<article class="exercise-row"><span class="exercise-index">${idx}</span><div><h3 class="exercise-name">${ex.name}</h3><p class="exercise-desc">${ex.description}</p></div>${patternBars(ex.phases)}<span class="exercise-tag">${ex.category}</span><button class="row-action" type="button" data-open="${ex.id}" aria-label="Open ${ex.name}">View practice <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button></article>`;
+        const isFavorite=favoriteIds.has(ex.id);
+        return `<article class="exercise-row"><span class="exercise-index">${idx}</span><div><h3 class="exercise-name">${ex.name}</h3><p class="exercise-desc">${ex.description}</p></div>${patternBars(ex.phases)}<span class="exercise-tag">${ex.category}</span><button class="favorite-toggle" type="button" data-favorite="${ex.id}" aria-pressed="${isFavorite}" aria-label="${isFavorite?'Remove':'Add'} ${ex.name} ${isFavorite?'from':'to'} favourites" title="${isFavorite?'Remove from':'Add to'} favourites"><svg viewBox="0 0 24 24" fill="${isFavorite?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6l1.2 1.2L12 21l7.6-7.6 1.2-1.2a5.4 5.4 0 0 0 0-7.6Z"/></svg></button><button class="row-action" type="button" data-open="${ex.id}" aria-label="Open ${ex.name}">View practice <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button></article>`;
       }).join('');
       $('result-count').textContent = filtered.length + (filtered.length === 1 ? ' practice' : ' practices');
       $('empty-state').classList.toggle('visible', filtered.length === 0);
+      $('empty-state').innerHTML = currentView==='Favorites' ? '<strong>No favourites yet.</strong><br>Save an exercise with the heart button and it will appear here.' : currentView==='Recent' ? '<strong>No recent practices yet.</strong><br>Start an exercise and it will appear here.' : '<strong>No matching exercise.</strong><br>Try another search or category.';
       $('exercise-list').style.display = filtered.length ? 'block' : 'none';
-      document.querySelectorAll('.filter-button').forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.filter === currentFilter)));
+      document.querySelectorAll('.filter-button').forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.filter ? btn.dataset.filter === currentFilter : btn.dataset.view===currentView)));
+      updatePersonalCounts();
     }
     $('exercise-search').addEventListener('input', renderExercises);
-    $('filter-list').addEventListener('click', (e) => { const btn = e.target.closest('[data-filter]'); if (!btn) return; currentFilter = btn.dataset.filter; renderExercises(); });
+    $('filter-list').addEventListener('click', (e) => {
+      const view=e.target.closest('[data-view]');
+      if(view){ currentView=view.dataset.view; currentFilter='All'; renderExercises(); return; }
+      const btn = e.target.closest('[data-filter]'); if (!btn) return; currentView='All'; currentFilter = btn.dataset.filter; renderExercises();
+    });
     $('category-grid').addEventListener('click', (e) => { const a=e.target.closest('[data-filter-link]'); if (!a) return; currentFilter=a.dataset.filterLink; $('exercise-search').value=''; renderExercises(); });
-    $('exercise-list').addEventListener('click', (e) => { const btn=e.target.closest('[data-open]'); if (btn) { practiceReturnFocus=btn; openPractice(btn.dataset.open); } });
+    $('exercise-list').addEventListener('click', (e) => {
+      const favorite=e.target.closest('[data-favorite]');
+      if(favorite){ const id=favorite.dataset.favorite; favoriteIds.has(id)?favoriteIds.delete(id):favoriteIds.add(id); saveFavorites(); renderExercises(); return; }
+      const btn=e.target.closest('[data-open]'); if (btn) { practiceReturnFocus=btn; openPractice(btn.dataset.open); }
+    });
     $('count-all').textContent = exercises.length;
+    const statusNode=document.createElement('p'); statusNode.id='storage-status'; statusNode.className='sr-only'; statusNode.setAttribute('role','status'); document.querySelector('.library-results').appendChild(statusNode);
 
     function syncThemeLabels() {
       const isLight = document.documentElement.dataset.theme === 'light';
@@ -806,6 +841,7 @@
       if(elapsed>=practiceDurationMs) completePractice();
     }
     function startPractice() {
+      if(selectedExercise) recordRecent(selectedExercise.id);
       clearInterval(practiceTimer); practiceDurationMs=Number($('session-duration').value)*60000; practiceElapsedBeforePause=0; practiceStartedAt=performance.now(); practicePaused=false; practiceState='active'; practiceLastPhase='';
       $('practice-start-row').style.display='none'; $('practice-stage').classList.add('session-active'); $('session-pause').setAttribute('aria-label','Pause session');
       $('session-pause').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg>';
@@ -823,6 +859,7 @@
     $('session-restart').addEventListener('click',restartPractice);
     $('session-duration').addEventListener('change',()=>{ if(practiceState==='ready') $('session-clock').textContent=$('session-duration').value+':00'; });
     $('session-fullscreen').addEventListener('click',async()=>{ try { if(!document.fullscreenElement) await $('practice-stage').requestFullscreen(); else await document.exitFullscreen(); } catch(_) {} });
+    updatePersonalCounts();
     renderExercises();
   </script>
 </body>
