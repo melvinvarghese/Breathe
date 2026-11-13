@@ -664,7 +664,7 @@
             <ellipse cx="280" cy="493" rx="157" ry="24" fill="#5b9b88" opacity=".16" filter="url(#pSoftBlur)"/>
             <g class="glass-body"><circle cx="280" cy="280" r="218" fill="url(#pGlassFill)" stroke="url(#pGlassEdge)" stroke-width="5"/><circle cx="280" cy="280" r="210" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.4"/><g clip-path="url(#pOrbClip)"><path d="M43 255C117 185 174 187 247 232s104 76 170 58 83-58 147-27" fill="none" stroke="url(#pCurrentLine)" stroke-width="23" opacity=".58"/><path d="M39 258C113 188 170 190 243 235s104 76 170 58 83-58 147-27" fill="none" stroke="#fff" stroke-width="1.1" opacity=".8"/><path d="M40 334c75-57 132-61 204-23s113 79 179 49 82-67 146-59" fill="none" stroke="url(#pCurrentLine)" stroke-width="14" opacity=".48"/><path d="M38 346c75-57 132-61 204-23s113 79 179 49 82-67 146-59" fill="none" stroke="#fff" stroke-width="1" opacity=".72"/><path d="M64 397c76-38 142-39 204-9s118 41 183 4 77-46 114-42" fill="none" stroke="#fff" stroke-opacity=".58" stroke-width="1.2"/><path d="M145 91c36-27 77-40 116-41" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".82"/></g><circle cx="280" cy="280" r="218" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/></g>
           </svg>
-          <div class="orb-label"><strong id="practice-phase">Ready when you are</strong><span id="practice-phase-count">Choose a duration, then start</span></div>
+          <div class="orb-label"><strong id="practice-phase" aria-live="polite" aria-atomic="true">Ready when you are</strong><span id="practice-phase-count">Choose a duration, then start</span></div>
         </div>
         <div class="session-message" id="session-message">Let the breath stay easy.</div>
         <div class="session-controls"><button class="icon-button" id="session-restart" type="button" aria-label="Restart session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-button main-control" id="session-pause" type="button" aria-label="Pause session"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg></button><button class="icon-button" id="session-fullscreen" type="button" aria-label="Toggle fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button class="text-button sound-toggle" type="button" aria-pressed="false" aria-label="Turn audio cues on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg><span>Audio cues off</span></button>
@@ -725,7 +725,8 @@
     let audioContext = null;
     let voiceGuidanceEnabled = false;
     let introLastPhase = '';
-    let practiceLastPhase = '';
+    let practiceLastPhase = ''; 
+    let practiceLastPhaseIndex = -1;
     const introPhases = [['Breathe in',4,'inhale'],['Hold gently',2,'hold'],['Breathe out',6,'exhale']];
 
     function patternBars(phases) {
@@ -979,11 +980,24 @@
     function practiceElapsed() { return practiceElapsedBeforePause + (practicePaused ? 0 : performance.now()-practiceStartedAt); }
     function formatTime(ms) { const s=Math.max(0,Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
     function phaseForElapsed(elapsed) {
-      if (!selectedExercise || !selectedExercise.phases) return {label:'Notice the breath',seconds:5,phase:'rest',remain:null,cycle:Math.floor(elapsed/10000)+1,phaseStart:0};
-      const phases=selectedExercise.phases; const cycleDuration=phases.reduce((sum,p)=>sum+p[1],0)*1000; const pos=elapsed%cycleDuration;
-      let total=0, active=phases[0];
-      for(const phase of phases){ if(pos<total+phase[1]*1000){active=phase;break;} total+=phase[1]*1000; }
-      return {label:active[0],seconds:active[1],phase:active[2],remain:Math.max(1,Math.ceil((total+active[1]*1000-pos)/1000)),cycle:Math.floor(elapsed/cycleDuration)+1,phaseStart:total};
+      if (!selectedExercise || !Array.isArray(selectedExercise.phases) || !selectedExercise.phases.length) {
+        return {label:'Notice the breath',seconds:5,phase:'rest',phaseIndex:-1,remain:null,cycle:Math.floor(elapsed/10000)+1,phaseStart:0};
+      }
+      const phases=selectedExercise.phases;
+      const cycleDuration=phases.reduce((sum,p)=>sum+Math.max(0,Number(p[1])||0),0)*1000;
+      if (!Number.isFinite(cycleDuration) || cycleDuration<=0) {
+        return {label:'Notice the breath',seconds:5,phase:'rest',phaseIndex:-1,remain:null,cycle:1,phaseStart:0};
+      }
+      const pos=elapsed%cycleDuration;
+      let total=0, activeIndex=0;
+      for(let i=0;i<phases.length;i++){
+        const duration=Math.max(0,Number(phases[i][1])||0)*1000;
+        if(duration>0 && pos<total+duration){ activeIndex=i; break; }
+        total+=duration;
+      }
+      const active=phases[activeIndex];
+      const duration=Math.max(0,Number(active[1])||0)*1000;
+      return {label:active[0],seconds:duration/1000,phase:active[2],phaseIndex:activeIndex,remain:Math.max(1,Math.ceil((total+duration-pos)/1000)),cycle:Math.floor(elapsed/cycleDuration)+1,phaseStart:total};
     }
     function updatePractice() {
       if(practiceState!=='active') return;
@@ -994,12 +1008,12 @@
       $('session-mode').textContent=selectedExercise.phases ? 'Cycle '+phase.cycle : 'Gentle observation';
       $('session-clock').textContent=formatTime(practiceDurationMs-elapsed);
       $('session-message').textContent=phase.remain ? phase.remain+' seconds in this phase' : 'Notice the breath without changing it';
-      if(phase.phase!==practiceLastPhase){ practiceLastPhase=phase.phase; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); playPhaseCue(phase.phase); speakPhase(phase.label); }
+      if(phase.phaseIndex!==practiceLastPhaseIndex){ practiceLastPhase=phase.phase; practiceLastPhaseIndex=phase.phaseIndex; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); playPhaseCue(phase.phase); speakPhase(phase.label); }
       if(elapsed>=practiceDurationMs) completePractice();
     }
     function startPractice() {
       if(selectedExercise) recordRecent(selectedExercise.id);
-      clearInterval(practiceTimer); practiceDurationMs=Number($('session-duration').value)*60000; practiceElapsedBeforePause=0; practiceStartedAt=performance.now(); practicePaused=false; practiceState='active'; practiceLastPhase='';
+      clearInterval(practiceTimer); practiceDurationMs=Number($('session-duration').value)*60000; practiceElapsedBeforePause=0; practiceStartedAt=performance.now(); practicePaused=false; practiceState='active'; practiceLastPhase=''; practiceLastPhaseIndex=-1;
       $('practice-start-row').style.display='none'; $('practice-stage').classList.add('session-active'); $('session-pause').setAttribute('aria-label','Pause session');
       $('session-pause').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg>';
       updatePractice(); practiceTimer=setInterval(updatePractice,100);
