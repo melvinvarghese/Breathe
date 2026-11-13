@@ -249,6 +249,11 @@
     .favorite-toggle { width:40px; height:40px; display:inline-grid; place-items:center; justify-self:end; border:1px solid var(--line); border-radius:50%; background:transparent; color:var(--muted); cursor:pointer; }
     .favorite-toggle:hover, .favorite-toggle[aria-pressed="true"] { color:#b45f68; border-color:color-mix(in srgb, #b45f68 45%, var(--line)); background:color-mix(in srgb, #b45f68 9%, transparent); }
     .favorite-toggle svg { width:18px; height:18px; }
+    .data-tools { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:13px 0; border-bottom:1px solid var(--line); }
+    .data-tools-note { color:var(--muted); font-size:12px; }
+    .data-tool-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .data-tool-button { min-height:38px; padding:7px 13px; border:1px solid var(--line-strong); border-radius:999px; background:transparent; color:var(--action); font:600 12px inherit; cursor:pointer; }
+    .data-tool-button:hover { background:var(--paper-2); border-color:var(--action); }
     .row-action { min-height: 44px; justify-self: end; display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--action); font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background .18s ease, border-color .18s ease; }
     .row-action:hover { background: var(--paper-2); border-color: var(--action); }
     .row-action svg { width: 13px; height: 13px; }
@@ -573,6 +578,15 @@
           </div></aside>
           <div class="library-results">
             <div class="search-row"><label class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="exercise-search" type="search" placeholder="Search breathing exercises" autocomplete="off" aria-label="Search breathing exercises"></label><span class="result-count" id="result-count" aria-live="polite">24 practices</span></div>
+            <div class="data-tools" aria-label="Personal data backup">
+              <span class="data-tools-note">Your favourites and history are saved on this device.</span>
+              <div class="data-tool-actions">
+                <button class="data-tool-button" id="export-data" type="button">Export backup</button>
+                <button class="data-tool-button" id="import-data" type="button">Restore backup</button>
+                <input id="import-file" type="file" accept="application/json,.json" hidden>
+              </div>
+            </div>
+            <p class="sr-only" id="backup-status" role="status" aria-live="polite"></p>
             <div class="exercise-list" id="exercise-list"></div>
             <div class="empty-state" id="empty-state"><strong>No matching exercise.</strong><br>Try another search or category.</div>
           </div>
@@ -700,6 +714,38 @@
       document.querySelectorAll('.filter-button').forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.filter ? btn.dataset.filter === currentFilter : btn.dataset.view===currentView)));
       updatePersonalCounts();
     }
+    function backupPayload() {
+      return { app:'Breathe', version:1, exportedAt:new Date().toISOString(), favorites:[...favoriteIds], recent:recentPractices.slice(0,20) };
+    }
+    function setBackupStatus(message) { $('backup-status').textContent=message; }
+    $('export-data').addEventListener('click',()=>{
+      const data=JSON.stringify(backupPayload(),null,2);
+      const blob=new Blob([data],{type:'application/json'});
+      const url=URL.createObjectURL(blob);
+      const link=document.createElement('a');
+      link.href=url; link.download='breathe-backup-'+new Date().toISOString().slice(0,10)+'.json';
+      document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
+      setBackupStatus('Backup downloaded. Keep the file somewhere safe.');
+    });
+    $('import-data').addEventListener('click',()=>$('import-file').click());
+    $('import-file').addEventListener('change',async()=>{
+      const file=$('import-file').files?.[0]; if(!file) return;
+      try {
+        if(file.size>200000) throw new Error('This backup file is too large.');
+        const parsed=JSON.parse(await file.text());
+        if(!parsed || parsed.app!=='Breathe' || parsed.version!==1 || !Array.isArray(parsed.favorites) || !Array.isArray(parsed.recent)) throw new Error('This is not a supported Breathe backup.');
+        const validIds=new Set(exercises.map(ex=>ex.id));
+        const nextFavorites=[...new Set(parsed.favorites.filter(id=>typeof id==='string' && validIds.has(id)))];
+        const seen=new Set();
+        const nextRecent=parsed.recent.filter(item=>item && typeof item.id==='string' && validIds.has(item.id) && Number.isFinite(item.at) && !seen.has(item.id) && seen.add(item.id)).slice(0,20).map(item=>({id:item.id,at:item.at}));
+        if(nextFavorites.length!==parsed.favorites.length || nextRecent.length===0 && parsed.recent.length>0 && !parsed.recent.every(item=>item && typeof item.id==='string' && validIds.has(item.id))) {
+          setBackupStatus('Some unknown or invalid entries were skipped while restoring.');
+        } else setBackupStatus('Backup restored successfully.');
+        favoriteIds=new Set(nextFavorites); recentPractices=nextRecent;
+        saveFavorites(); saveRecent(); renderExercises();
+      } catch(error) { setBackupStatus(error.message || 'Could not read this backup file.'); }
+      finally { $('import-file').value=''; }
+    });
     $('exercise-search').addEventListener('input', renderExercises);
     $('filter-list').addEventListener('click', (e) => {
       const view=e.target.closest('[data-view]');
