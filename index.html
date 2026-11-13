@@ -9,6 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="canonical" href="https://melvinvarghese.github.io/Breathe/">
   <meta name="description" content="Guided breathing exercises for everyday moments. Begin with three simple cycles, then find a practice that suits you.">
   <title>Breathe — Guided breathing exercises</title>
   <style>
@@ -304,6 +305,10 @@
     .pattern-step small { display: block; color: var(--muted); font-size: 13px; }
     .practice-caution { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 0 0 25px; }
     .practice-action-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .intention-field { display:grid; gap:7px; margin:0 0 18px; max-width:360px; }
+    .intention-field label { color:var(--muted); font-size:12px; font-weight:650; letter-spacing:.035em; }
+    .intention-select { width:100%; min-height:46px; padding:0 13px; border:1px solid var(--line-strong); border-radius:12px; background:var(--paper); color:var(--ink); font:inherit; }
+    .intention-hint { margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
     .practice-options { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px; }
     .hold-skip-option { display:inline-flex; align-items:center; gap:9px; min-height:44px; padding:8px 12px; border:1px solid var(--line); border-radius:12px; color:var(--ink-2); font-size:13px; cursor:pointer; }
     .hold-skip-option input { width:17px; height:17px; accent-color:var(--action); }
@@ -651,6 +656,7 @@
         <div class="pattern-detail"><strong>THE PATTERN</strong><div class="pattern-flow" id="pattern-flow"></div></div>
         <div class="practice-use"><strong>GOOD FOR</strong><p id="practice-use">A gentle moment to pause and notice your breathing.</p></div>
         <p class="practice-caution" id="practice-caution">Keep the counts comfortable. Return to normal breathing if you feel strained or light-headed.</p>
+        <div class="intention-field"><label for="session-intention">SET AN INTENTION</label><select class="intention-select" id="session-intention"><option value="settle">Settle — make space to slow down</option><option value="focus">Focus — return to one thing</option><option value="unwind">Unwind — let the day soften</option><option value="observe">Observe — notice without changing</option></select><p class="intention-hint" id="intention-hint" aria-live="polite">Let this be a gentle pause, with nothing to achieve.</p></div>
         <div class="practice-action-row" id="practice-start-row"><button class="primary-button" id="start-practice" type="button"><span>Start practice</span><span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button><label class="duration-select-label"><span class="sr-only">Session length</span><select class="duration-select" id="session-duration"><option value="1">1 minute</option><option value="3" selected>3 minutes</option><option value="5">5 minutes</option></select></label></div>
         <div class="practice-options" id="practice-options"><label class="hold-skip-option"><input type="checkbox" id="skip-holds"> <span>Skip timed holds</span></label><p class="hold-skip-note">Removes timed pauses from this practice. You can still breathe naturally between phases.</p></div>
 
@@ -719,6 +725,13 @@
     function saveRecent() { try { localStorage.setItem(STORAGE_KEYS.recent,JSON.stringify(recentPractices.slice(0,20))); } catch (_) { announceStorageIssue(); } }
     function announceStorageIssue() { const status=$('storage-status'); if(status) status.textContent='Your browser could not save this change. Check available site storage.'; }
     function recordRecent(id) { recentPractices=[{id,at:Date.now()},...recentPractices.filter(item=>item.id!==id)].slice(0,20); saveRecent(); updatePersonalCounts(); }
+    const INTENTIONS = {settle:{label:'Settle',hint:'Let this be a gentle pause, with nothing to achieve.'},focus:{label:'Focus',hint:'Gently return your attention to the rhythm of this breath.'},unwind:{label:'Unwind',hint:'Allow your shoulders and jaw to soften, without forcing anything.'},observe:{label:'Observe',hint:'Notice each breath as it is, without needing to change it.'}};
+    let selectedIntention = 'settle';
+    try { const saved=localStorage.getItem('breathe-intention'); if(INTENTIONS[saved]) selectedIntention=saved; } catch(_) {}
+    function syncIntention() { const item=INTENTIONS[selectedIntention] || INTENTIONS.settle; $('intention-hint').textContent=item.hint; }
+    $('session-intention').value=selectedIntention;
+    $('session-intention').addEventListener('change',()=>{ selectedIntention=INTENTIONS[$('session-intention').value] ? $('session-intention').value : 'settle'; try { localStorage.setItem('breathe-intention',selectedIntention); } catch(_) {} syncIntention(); });
+    syncIntention();
     let selectedExercise = null;
     let practiceReturnFocus = null;
     let introTimer = null;
@@ -954,6 +967,7 @@
       selectedExercise = exercises.find(ex=>ex.id===id); if (!selectedExercise) return;
       clearInterval(practiceTimer); practiceState='ready'; practicePaused=false; practiceElapsedBeforePause=0;
       $('practice-category').textContent=selectedExercise.category+' · '+selectedExercise.level;
+      $('session-intention').value=selectedIntention; syncIntention();
       $('practice-title').textContent=selectedExercise.name;
       $('practice-description').textContent=selectedExercise.description;
       $('practice-use').textContent=selectedExercise.bestFor;
@@ -1019,7 +1033,7 @@
       $('practice-stage').dataset.phase=phase.phase; $('practice-stage').style.setProperty('--phase-duration',phase.seconds+'s');
       $('practice-phase').textContent=phase.label;
       $('practice-phase-count').textContent=getPracticePhases()?.length ? 'Follow a comfortable rhythm' : 'No count to follow';
-      $('session-mode').textContent=getPracticePhases()?.length ? 'Cycle '+phase.cycle : 'Gentle observation';
+      $('session-mode').textContent=(INTENTIONS[selectedIntention]?.label || 'Settle')+' · '+(getPracticePhases()?.length ? 'Cycle '+phase.cycle : 'Gentle observation');
       $('session-clock').textContent=formatTime(practiceDurationMs-elapsed);
       $('session-message').textContent=phase.remain ? phase.remain+' seconds in this phase' : 'Notice the breath without changing it';
       if(phase.phaseIndex!==practiceLastPhaseIndex){ practiceLastPhase=phase.phase; practiceLastPhaseIndex=phase.phaseIndex; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); playPhaseCue(phase.phase); speakPhase(phase.label); }
