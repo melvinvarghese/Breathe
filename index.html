@@ -474,6 +474,7 @@
         <div class="intro-controls" id="intro-controls" aria-label="Introductory exercise controls">
           <button class="text-button" id="pause-intro" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg><span>Pause</span></button>
           <button class="text-button" id="restart-intro" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg><span>Start again</span></button>
+          <button class="text-button sound-toggle" type="button" aria-pressed="false" aria-label="Turn audio cues on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg><span>Audio cues off</span></button>
           <a class="text-button" href="#categories">Skip to exercises</a>
         </div>
         <div class="intro-progress" id="intro-progress" aria-hidden="true">
@@ -630,7 +631,7 @@
           <div class="orb-label"><strong id="practice-phase">Ready when you are</strong><span id="practice-phase-count">Choose a duration, then start</span></div>
         </div>
         <div class="session-message" id="session-message">Let the breath stay easy.</div>
-        <div class="session-controls"><button class="icon-button" id="session-restart" type="button" aria-label="Restart session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-button main-control" id="session-pause" type="button" aria-label="Pause session"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg></button><button class="icon-button" id="session-fullscreen" type="button" aria-label="Toggle fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button></div>
+        <div class="session-controls"><button class="icon-button" id="session-restart" type="button" aria-label="Restart session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-button main-control" id="session-pause" type="button" aria-label="Pause session"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg></button><button class="icon-button" id="session-fullscreen" type="button" aria-label="Toggle fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button class="text-button sound-toggle" type="button" aria-pressed="false" aria-label="Turn audio cues on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg><span>Audio cues off</span></button></div>
         <div class="practice-done" id="practice-done" aria-live="polite"><h3>Practice complete.</h3><p>Return to the exercise library whenever you are ready.</p><button class="primary-button" id="done-close" type="button"><span>Return to exercises</span><span class="button-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button></div>
       </div>
     </div>
@@ -683,6 +684,8 @@
     let practiceTimer = null;
     let practiceStartedAt = 0, practiceElapsedBeforePause = 0, practicePaused = false, practiceState = 'ready';
     let practiceDurationMs = 180000;
+    let audioCuesEnabled = false;
+    let audioContext = null;
     let introLastPhase = '';
     let practiceLastPhase = '';
     const introPhases = [['Breathe in',4,'inhale'],['Hold gently',2,'hold'],['Breathe out',6,'exhale']];
@@ -784,6 +787,42 @@
     $('theme-toggle').addEventListener('click', setTheme);
     $('practice-theme-toggle').addEventListener('click', setTheme);
 
+    function syncAudioButtons() {
+      document.querySelectorAll('.sound-toggle').forEach(button => {
+        button.setAttribute('aria-pressed', String(audioCuesEnabled));
+        button.setAttribute('aria-label', audioCuesEnabled ? 'Turn audio cues off' : 'Turn audio cues on');
+        const label=button.querySelector('span'); if(label) label.textContent=audioCuesEnabled ? 'Audio cues on' : 'Audio cues off';
+      });
+    }
+    function toggleAudioCues() {
+      audioCuesEnabled=!audioCuesEnabled;
+      try { localStorage.setItem('breathe-audio-cues', audioCuesEnabled ? 'on' : 'off'); } catch(_) {}
+      syncAudioButtons();
+      if(audioCuesEnabled) playPhaseCue('inhale');
+    }
+    function playPhaseCue(phase) {
+      if(!audioCuesEnabled) return;
+      try {
+        const AudioCtx=window.AudioContext || window.webkitAudioContext;
+        if(!AudioCtx) return;
+        if(!audioContext) audioContext=new AudioCtx();
+        if(audioContext.state==='suspended') audioContext.resume();
+        const now=audioContext.currentTime;
+        const frequencies={inhale:523.25,hold:659.25,exhale:392};
+        const oscillator=audioContext.createOscillator();
+        const gain=audioContext.createGain();
+        oscillator.type='sine'; oscillator.frequency.setValueAtTime(frequencies[phase] || 440,now);
+        gain.gain.setValueAtTime(0.0001,now);
+        gain.gain.exponentialRampToValueAtTime(0.055,now+0.025);
+        gain.gain.exponentialRampToValueAtTime(0.0001,now+0.22);
+        oscillator.connect(gain); gain.connect(audioContext.destination);
+        oscillator.start(now); oscillator.stop(now+0.24);
+      } catch(_) {}
+    }
+    try { audioCuesEnabled=localStorage.getItem('breathe-audio-cues')==='on'; } catch(_) {}
+    syncAudioButtons();
+    document.querySelectorAll('.sound-toggle').forEach(button=>button.addEventListener('click',toggleAudioCues));
+
     function introElapsed() { return introElapsedBeforePause + (introPaused ? 0 : performance.now() - introStartedAt); }
     function updateIntro() {
       if (introState !== 'active') return;
@@ -801,7 +840,7 @@
       $('intro-cycle').textContent = 'Cycle '+cycle+' of 3';
       $('intro-remaining').textContent = Math.ceil((36000-elapsed)/1000)+' seconds';
       $('intro-progress-value').style.width = (elapsed/36000*100)+'%';
-      if (active[2] !== introLastPhase) { introLastPhase=active[2]; $('hero-art').style.setProperty('--phase-duration',active[1]+'s'); }
+      if (active[2] !== introLastPhase) { introLastPhase=active[2]; $('hero-art').style.setProperty('--phase-duration',active[1]+'s'); playPhaseCue(active[2]); }
       if (elapsed >= 36000) finishIntro();
     }
     function beginIntro() {
@@ -883,7 +922,7 @@
       $('session-mode').textContent=selectedExercise.phases ? 'Cycle '+phase.cycle : 'Gentle observation';
       $('session-clock').textContent=formatTime(practiceDurationMs-elapsed);
       $('session-message').textContent=phase.remain ? phase.remain+' seconds in this phase' : 'Notice the breath without changing it';
-      if(phase.phase!==practiceLastPhase){ practiceLastPhase=phase.phase; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); }
+      if(phase.phase!==practiceLastPhase){ practiceLastPhase=phase.phase; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); playPhaseCue(phase.phase); }
       if(elapsed>=practiceDurationMs) completePractice();
     }
     function startPractice() {
