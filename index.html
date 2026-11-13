@@ -958,7 +958,7 @@
       $('practice-description').textContent=selectedExercise.description;
       $('practice-use').textContent=selectedExercise.bestFor;
       $('practice-meta').innerHTML='<span class="meta-chip">'+selectedExercise.level+'</span><span class="meta-chip">'+selectedExercise.minutes+'</span><span class="meta-chip">'+selectedExercise.pattern+'</span>';
-      $('skip-holds').checked=false; renderPracticePattern();
+      $('skip-holds').checked=false; $('practice-options').style.display=selectedExercise.phases?.some(phase=>phase[2]==='hold') ? 'flex' : 'none'; renderPracticePattern();
       $('practice-caution').textContent=selectedExercise.caution;
       $('practice-stage').classList.remove('session-active','session-complete'); $('practice-stage').dataset.phase='rest'; $('practice-phase').textContent='Ready when you are'; $('practice-phase-count').textContent='Choose a duration, then start'; $('session-message').textContent='Let the breath stay easy.';
       $('session-mode').textContent='Ready to begin'; $('session-clock').textContent= $('session-duration').value+':00';
