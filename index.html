@@ -475,6 +475,7 @@
           <button class="text-button" id="pause-intro" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg><span>Pause</span></button>
           <button class="text-button" id="restart-intro" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg><span>Start again</span></button>
           <button class="text-button sound-toggle" type="button" aria-pressed="false" aria-label="Turn audio cues on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg><span>Audio cues off</span></button>
+          <button class="text-button voice-toggle" type="button" aria-pressed="false" aria-label="Turn voice guidance on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 18V5m0 0-4 4m4-4 4 4"/><path d="M5 14v1a7 7 0 0 0 14 0v-1"/></svg><span>Voice guidance off</span></button>
           <a class="text-button" href="#categories">Skip to exercises</a>
         </div>
         <div class="intro-progress" id="intro-progress" aria-hidden="true">
@@ -631,7 +632,8 @@
           <div class="orb-label"><strong id="practice-phase">Ready when you are</strong><span id="practice-phase-count">Choose a duration, then start</span></div>
         </div>
         <div class="session-message" id="session-message">Let the breath stay easy.</div>
-        <div class="session-controls"><button class="icon-button" id="session-restart" type="button" aria-label="Restart session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-button main-control" id="session-pause" type="button" aria-label="Pause session"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg></button><button class="icon-button" id="session-fullscreen" type="button" aria-label="Toggle fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button class="text-button sound-toggle" type="button" aria-pressed="false" aria-label="Turn audio cues on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg><span>Audio cues off</span></button></div>
+        <div class="session-controls"><button class="icon-button" id="session-restart" type="button" aria-label="Restart session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-button main-control" id="session-pause" type="button" aria-label="Pause session"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg></button><button class="icon-button" id="session-fullscreen" type="button" aria-label="Toggle fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button class="text-button sound-toggle" type="button" aria-pressed="false" aria-label="Turn audio cues on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg><span>Audio cues off</span></button>
+          <button class="text-button voice-toggle" type="button" aria-pressed="false" aria-label="Turn voice guidance on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 18V5m0 0-4 4m4-4 4 4"/><path d="M5 14v1a7 7 0 0 0 14 0v-1"/></svg><span>Voice guidance off</span></button></div>
         <div class="practice-done" id="practice-done" aria-live="polite"><h3>Practice complete.</h3><p>Return to the exercise library whenever you are ready.</p><button class="primary-button" id="done-close" type="button"><span>Return to exercises</span><span class="button-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button></div>
       </div>
     </div>
@@ -686,6 +688,7 @@
     let practiceDurationMs = 180000;
     let audioCuesEnabled = false;
     let audioContext = null;
+    let voiceGuidanceEnabled = false;
     let introLastPhase = '';
     let practiceLastPhase = '';
     const introPhases = [['Breathe in',4,'inhale'],['Hold gently',2,'hold'],['Breathe out',6,'exhale']];
@@ -822,6 +825,39 @@
     try { audioCuesEnabled=localStorage.getItem('breathe-audio-cues')==='on'; } catch(_) {}
     syncAudioButtons();
     document.querySelectorAll('.sound-toggle').forEach(button=>button.addEventListener('click',toggleAudioCues));
+    function syncVoiceButtons() {
+      document.querySelectorAll('.voice-toggle').forEach(button => {
+        button.setAttribute('aria-pressed', String(voiceGuidanceEnabled));
+        button.setAttribute('aria-label', voiceGuidanceEnabled ? 'Turn voice guidance off' : 'Turn voice guidance on');
+        const label=button.querySelector('span'); if(label) label.textContent=voiceGuidanceEnabled ? 'Voice guidance on' : 'Voice guidance off';
+        const supported=Boolean(window.speechSynthesis && window.SpeechSynthesisUtterance);
+        button.disabled=!supported;
+        if(!supported) { button.setAttribute('aria-label','Voice guidance is not supported by this browser'); if(label) label.textContent='Voice unavailable'; }
+      });
+    }
+    function stopVoiceGuidance() {
+      if(window.speechSynthesis) window.speechSynthesis.cancel();
+    }
+    function toggleVoiceGuidance() {
+      if(!window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
+      voiceGuidanceEnabled=!voiceGuidanceEnabled;
+      try { localStorage.setItem('breathe-voice-guidance', voiceGuidanceEnabled ? 'on' : 'off'); } catch(_) {}
+      if(!voiceGuidanceEnabled) stopVoiceGuidance();
+      syncVoiceButtons();
+      if(voiceGuidanceEnabled) speakPhase('Ready when you are');
+    }
+    function speakPhase(label) {
+      if(!voiceGuidanceEnabled || !window.speechSynthesis || !window.SpeechSynthesisUtterance || !label) return;
+      try {
+        window.speechSynthesis.cancel();
+        const utterance=new SpeechSynthesisUtterance(label);
+        utterance.lang='en-US'; utterance.rate=0.88; utterance.pitch=1; utterance.volume=0.8;
+        window.speechSynthesis.speak(utterance);
+      } catch(_) {}
+    }
+    try { voiceGuidanceEnabled=localStorage.getItem('breathe-voice-guidance')==='on'; } catch(_) {}
+    syncVoiceButtons();
+    document.querySelectorAll('.voice-toggle').forEach(button=>button.addEventListener('click',toggleVoiceGuidance));
 
     function introElapsed() { return introElapsedBeforePause + (introPaused ? 0 : performance.now() - introStartedAt); }
     function updateIntro() {
@@ -840,7 +876,7 @@
       $('intro-cycle').textContent = 'Cycle '+cycle+' of 3';
       $('intro-remaining').textContent = Math.ceil((36000-elapsed)/1000)+' seconds';
       $('intro-progress-value').style.width = (elapsed/36000*100)+'%';
-      if (active[2] !== introLastPhase) { introLastPhase=active[2]; $('hero-art').style.setProperty('--phase-duration',active[1]+'s'); playPhaseCue(active[2]); }
+      if (active[2] !== introLastPhase) { introLastPhase=active[2]; $('hero-art').style.setProperty('--phase-duration',active[1]+'s'); playPhaseCue(active[2]); speakPhase(active[0]); }
       if (elapsed >= 36000) finishIntro();
     }
     function beginIntro() {
@@ -855,11 +891,11 @@
     }
     function pauseIntro() {
       if (introState !== 'active') return;
-      if (!introPaused) { introElapsedBeforePause += performance.now()-introStartedAt; introPaused=true; clearInterval(introTimer); $('pause-intro').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 12 7-12 7z"/></svg><span>Resume</span>'; $('hero-phase-count').textContent='Paused'; }
+      if (!introPaused) { stopVoiceGuidance(); introElapsedBeforePause += performance.now()-introStartedAt; introPaused=true; clearInterval(introTimer); $('pause-intro').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 12 7-12 7z"/></svg><span>Resume</span>'; $('hero-phase-count').textContent='Paused'; }
       else { introPaused=false; introStartedAt=performance.now(); $('pause-intro').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg><span>Pause</span>'; introTimer=setInterval(updateIntro,100); updateIntro(); }
     }
     function finishIntro() {
-      clearInterval(introTimer); introState='complete'; introPaused=false;
+      stopVoiceGuidance(); clearInterval(introTimer); introState='complete'; introPaused=false;
       $('intro').classList.remove('is-active'); $('intro').classList.add('is-complete'); $('hero-art').dataset.phase='rest';
       $('hero-title').innerHTML='Three breaths <span class="soft">complete.</span>';
       $('hero-kicker').textContent='A good place to begin';
@@ -888,7 +924,7 @@
       $('practice-screen').classList.add('open'); $('practice-screen').setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
       $('close-practice').focus();
     }
-    function closePractice() { clearInterval(practiceTimer); practiceState='ready'; $('practice-stage').classList.remove('session-active','session-complete'); $('practice-screen').classList.remove('open'); $('practice-screen').setAttribute('aria-hidden','true'); document.body.style.overflow=''; if (practiceReturnFocus && practiceReturnFocus.isConnected) practiceReturnFocus.focus(); practiceReturnFocus=null; }
+    function closePractice() { stopVoiceGuidance(); clearInterval(practiceTimer); practiceState='ready'; $('practice-stage').classList.remove('session-active','session-complete'); $('practice-screen').classList.remove('open'); $('practice-screen').setAttribute('aria-hidden','true'); document.body.style.overflow=''; if (practiceReturnFocus && practiceReturnFocus.isConnected) practiceReturnFocus.focus(); practiceReturnFocus=null; }
     $('close-practice').addEventListener('click',closePractice);
     $('done-close').addEventListener('click',closePractice);
     $('practice-screen').addEventListener('click',e=>{ if(e.target===$('practice-screen')) closePractice(); });
@@ -922,7 +958,7 @@
       $('session-mode').textContent=selectedExercise.phases ? 'Cycle '+phase.cycle : 'Gentle observation';
       $('session-clock').textContent=formatTime(practiceDurationMs-elapsed);
       $('session-message').textContent=phase.remain ? phase.remain+' seconds in this phase' : 'Notice the breath without changing it';
-      if(phase.phase!==practiceLastPhase){ practiceLastPhase=phase.phase; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); playPhaseCue(phase.phase); }
+      if(phase.phase!==practiceLastPhase){ practiceLastPhase=phase.phase; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); playPhaseCue(phase.phase); speakPhase(phase.label); }
       if(elapsed>=practiceDurationMs) completePractice();
     }
     function startPractice() {
@@ -934,10 +970,10 @@
     }
     function togglePracticePause() {
       if(practiceState!=='active' && practiceState!=='paused') return;
-      if(!practicePaused){ practiceElapsedBeforePause += performance.now()-practiceStartedAt; practicePaused=true; practiceState='paused'; clearInterval(practiceTimer); $('session-pause').setAttribute('aria-label','Resume session'); $('session-pause').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 12 7-12 7z"/></svg>'; $('practice-phase-count').textContent='Paused'; $('session-message').textContent='Take your time.'; }
+      if(!practicePaused){ stopVoiceGuidance(); practiceElapsedBeforePause += performance.now()-practiceStartedAt; practicePaused=true; practiceState='paused'; clearInterval(practiceTimer); $('session-pause').setAttribute('aria-label','Resume session'); $('session-pause').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 12 7-12 7z"/></svg>'; $('practice-phase-count').textContent='Paused'; $('session-message').textContent='Take your time.'; }
       else { practicePaused=false; practiceStartedAt=performance.now(); practiceState='active'; $('session-pause').setAttribute('aria-label','Pause session'); $('session-pause').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg>'; practiceTimer=setInterval(updatePractice,100); updatePractice(); }
     }
-    function completePractice(){ clearInterval(practiceTimer); practiceState='complete'; practicePaused=false; $('practice-stage').classList.add('session-complete'); $('practice-stage').dataset.phase='rest'; $('practice-done').classList.add('visible'); $('practice-phase').textContent='Complete'; $('practice-phase-count').textContent='Session finished'; $('session-clock').textContent='0:00'; $('done-close').focus(); }
+    function completePractice(){ stopVoiceGuidance(); clearInterval(practiceTimer); practiceState='complete'; practicePaused=false; $('practice-stage').classList.add('session-complete'); $('practice-stage').dataset.phase='rest'; $('practice-done').classList.add('visible'); $('practice-phase').textContent='Complete'; $('practice-phase-count').textContent='Session finished'; $('session-clock').textContent='0:00'; $('done-close').focus(); }
     function restartPractice(){ startPractice(); }
     $('start-practice').addEventListener('click',startPractice);
     $('session-pause').addEventListener('click',togglePracticePause);
