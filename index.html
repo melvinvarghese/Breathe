@@ -4,6 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f2f6f2">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
   <meta name="description" content="Guided breathing exercises for everyday moments. Begin with three simple cycles, then find a practice that suits you.">
   <title>Breathe — Guided breathing exercises</title>
   <style>
@@ -442,6 +447,20 @@
       .closing { padding-top: 56px; }
       .closing-links { gap: 15px; flex-wrap: wrap; }
     }
+    .help-section { display:grid; grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr); gap:clamp(32px,7vw,100px); padding-top:88px; padding-bottom:96px; }
+    .help-heading h2 { margin:0 0 14px; font-size:clamp(30px,4vw,46px); line-height:1.08; letter-spacing:-.045em; }
+    .help-heading p:last-child { max-width:390px; color:var(--muted); }
+    .help-list { border-top:1px solid var(--line); }
+    .help-list details { border-bottom:1px solid var(--line); padding:19px 2px; }
+    .help-list summary { cursor:pointer; font-weight:620; color:var(--ink); list-style:none; display:flex; align-items:center; justify-content:space-between; gap:18px; }
+    .help-list summary::-webkit-details-marker { display:none; }
+    .help-list summary::after { content:"+"; color:var(--action); font-size:22px; font-weight:400; }
+    .help-list details[open] summary::after { content:"−"; }
+    .help-list details p { max-width:680px; margin:12px 28px 2px 0; color:var(--muted); font-size:14px; }
+    .footer-install { border:1px solid var(--line-strong); background:transparent; color:var(--ink-2); border-radius:999px; padding:9px 14px; cursor:pointer; font:inherit; font-size:13px; }
+    .footer-install:hover { background:var(--surface); }
+    .footer-install[hidden] { display:none; }
+    @media (max-width:760px) { .help-section { grid-template-columns:1fr; gap:24px; padding-top:64px; padding-bottom:70px; } }
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
     }
@@ -455,6 +474,7 @@
       <a href="#categories">Categories</a>
       <a href="#library">All exercises</a>
       <a href="#practice-note">A note on practice</a>
+      <a href="#help">How to use</a>
     </nav>
     <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/></svg>
@@ -599,8 +619,18 @@
     <section class="practice-note" id="practice-note">
       <div class="wrap note-layout"><h2>Keep each breath comfortable.</h2><div class="note-copy"><p>Breathing patterns are guides, not targets. Let the breath stay gentle, and skip any hold that feels uncomfortable. You can pause or stop at any time.</p><p>Practise somewhere safe; do not use timed breathing or breath holds while driving or in water. If you feel dizzy, strained or light-headed, return to normal breathing. Some techniques may not suit everyone. This is general practice guidance, not medical advice.</p></div></div>
     </section>
+    <section class="help-section wrap" id="help" aria-labelledby="help-title">
+      <div class="help-heading"><p class="section-kicker">A little guidance</p><h2 id="help-title">A calmer way to begin.</h2><p>Breathe is a simple, private space for guided breathing. There is nothing to achieve and no need to finish a session.</p></div>
+      <div class="help-list">
+        <details><summary>How do I use a breathing exercise?</summary><p>Choose an exercise, read its pattern and guidance, then select a comfortable session length. Start when you are ready. Follow the orb and phase words gently; never force your breath to match a count.</p></details>
+        <details><summary>Can I skip the introduction?</summary><p>Yes. You can scroll to the exercise library at any time. The introductory three-cycle guide is optional.</p></details>
+        <details><summary>Does Breathe collect my information?</summary><p>No account or analytics are used. Your theme, voice preference and recent practice details are stored only in this browser when supported. They are not sent to a server.</p></details>
+        <details><summary>Can I use Breathe offline?</summary><p>After the first successful visit, supported browsers can keep the app available offline. Install it from your browser menu when the install option is available.</p></details>
+        <details><summary>What if a breathing pattern feels uncomfortable?</summary><p>Stop following the count and return to your natural breathing. You can skip holds, shorten a session or leave at any time. Do not practise timed breathing or breath holds while driving or in water. This tool is for general wellbeing, not diagnosis or treatment.</p></details>
+      </div>
+    </section>
   </main>
-  <footer class="closing"><div class="wrap"><div class="closing-inner"><div><h2>Take your time.</h2><p>Return to the exercises whenever a short breathing practice would be useful.</p></div><nav class="closing-links" aria-label="Footer navigation"><a href="#top">Back to top</a><a href="#categories">Browse categories</a><a href="#library">All exercises</a></nav></div><div class="legal-line"><span>Breathe</span><span>Designed for a slower moment.</span></div></div></footer>
+  <footer class="closing"><div class="wrap"><div class="closing-inner"><div><h2>Take your time.</h2><p>Return to the exercises whenever a short breathing practice would be useful.</p></div><nav class="closing-links" aria-label="Footer navigation"><a href="#top">Back to top</a><a href="#categories">Browse categories</a><a href="#library">All exercises</a><a href="#help">Help & privacy</a><button class="footer-install" id="install-app" type="button" hidden>Install Breathe</button></nav></div><div class="legal-line"><span>Breathe</span><span>Designed for a slower moment.</span></div></div></footer>
 
   <div class="practice-screen" id="practice-screen" role="dialog" aria-modal="true" aria-labelledby="practice-title" aria-describedby="practice-description" aria-hidden="true" tabindex="-1">
     <div class="practice-top"><button class="back-button" id="close-practice" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7 7-7-7 7-7"/></svg>Back to exercises</button><div class="practice-top-right"><button class="icon-button" id="practice-theme-toggle" type="button" aria-label="Switch theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/></svg></button></div></div>
@@ -982,6 +1012,28 @@
     $('session-fullscreen').addEventListener('click',async()=>{ try { if(!document.fullscreenElement) await $('practice-stage').requestFullscreen(); else await document.exitFullscreen(); } catch(_) {} });
     updatePersonalCounts();
     renderExercises();
+
+    // Progressive enhancement: the core app remains usable if offline features are unavailable.
+    let deferredInstallPrompt = null;
+    const installButton = document.getElementById("install-app");
+    window.addEventListener("beforeinstallprompt", event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      if (installButton) installButton.hidden = false;
+    });
+    if (installButton) installButton.addEventListener("click", async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      await deferredInstallPrompt.userChoice;
+      deferredInstallPrompt = null;
+      installButton.hidden = true;
+    });
+    window.addEventListener("appinstalled", () => {
+      if (installButton) installButton.hidden = true;
+    });
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
+    }
   </script>
 </body>
 </html>
