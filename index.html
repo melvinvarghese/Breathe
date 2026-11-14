@@ -3,637 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f2f6f2">
+  <title>Breathe — Guided breathing exercises</title>
+  <meta name="description" content="Guided breathing exercises for everyday moments. Begin with three simple cycles, then find a practice that suits you.">
+  <link rel="canonical" href="https://melvinvarghese.github.io/Breathe/">
+  <meta name="theme-color" content="#f3f6f2">
+  <meta name="color-scheme" content="light dark">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Breathe">
+  <meta property="og:title" content="Breathe — Guided breathing exercises">
+  <meta property="og:description" content="A calm, private space for guided breathing. 24 starter exercises, no account, no tracking.">
+  <meta property="og:url" content="https://melvinvarghese.github.io/Breathe/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Breathe — Guided breathing exercises">
+  <meta name="twitter:description" content="A calm, private space for guided breathing. 24 starter exercises, no account, no tracking.">
   <link rel="manifest" href="./manifest.webmanifest">
   <link rel="icon" href="./icon.svg" type="image/svg+xml">
-  <link rel="canonical" href="https://melvinvarghese.github.io/Breathe/">
-  <meta name="description" content="Guided breathing exercises for everyday moments. Begin with three simple cycles, then find a practice that suits you.">
-  <title>Breathe — Guided breathing exercises</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --paper: #f2f6f2;
-      --paper-2: #eaf1ec;
-      --surface: #fbfdfb;
-      --surface-2: #e5eee8;
-      --ink: #16312b;
-      --ink-2: #36534b;
-      --muted: #586e65;
-      --muted-2: #586e65;
-      --line: rgba(22,49,43,.13);
-      --line-strong: rgba(22,49,43,.22);
-      --action: #1d6255;
-      --action-hover: #164d43;
-      --action-ink: #f4fbf7;
-      --mint: #9dcbbb;
-      --sea: #88bdb8;
-      --sky: #a9c9d0;
-      --peach: #e5c1a5;
-      --rose: #dfb9b4;
-      --shadow: 0 22px 70px rgba(32,75,64,.13);
-      --shadow-soft: 0 8px 28px rgba(32,75,64,.09);
-      --radius-lg: 28px;
-      --radius-md: 18px;
-      --radius-sm: 12px;
-      --wrap: min(1260px, calc(100% - 80px));
-      --nav-h: 76px;
-    }
-    html[data-theme="dark"] {
-      color-scheme: dark;
-      --paper: #101f1c;
-      --paper-2: #152a25;
-      --surface: #1a302a;
-      --surface-2: #203a33;
-      --ink: #e8f2ed;
-      --ink-2: #c6d8cf;
-      --muted: #a1b9ae;
-      --muted-2: #819d91;
-      --line: rgba(226,243,234,.12);
-      --line-strong: rgba(226,243,234,.22);
-      --action: #9bcdbb;
-      --action-hover: #b4decd;
-      --action-ink: #10251f;
-      --mint: #5f9b87;
-      --sea: #4f8e8d;
-      --sky: #648d9a;
-      --peach: #bd9170;
-      --rose: #ad7976;
-      --shadow: 0 22px 70px rgba(0,0,0,.35);
-      --shadow-soft: 0 8px 28px rgba(0,0,0,.24);
-    }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: auto; scroll-padding-top: 24px; }
-    body {
-      margin: 0;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
-      font-size: 16px;
-      line-height: 1.55;
-      letter-spacing: -.012em;
-      transition: background .35s ease, color .35s ease;
-    }
-    button, input { font: inherit; }
-    button { color: inherit; }
-    a { color: inherit; text-decoration: none; }
-    button:focus-visible, a:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb, var(--action) 55%, white); outline-offset: 3px; }
-    .skip-link { position: absolute; left: 16px; top: -60px; z-index: 99; padding: 10px 14px; color: var(--action-ink); background: var(--action); border-radius: 10px; }
-    .skip-link:focus { top: 12px; }
-    .wrap { width: var(--wrap); margin-inline: auto; }
-    .topbar {
-      height: var(--nav-h);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-      width: var(--wrap);
-      margin: 0 auto;
-      position: relative;
-      z-index: 10;
-    }
-    .brand { display: inline-flex; align-items: center; gap: 10px; min-width: 160px; font-size: 17px; font-weight: 650; letter-spacing: -.045em; }
-    .brand-mark { width: 27px; height: 27px; position: relative; border: 1.4px solid var(--action); border-radius: 50%; display: inline-block; }
-    .brand-mark::before { content: ""; position: absolute; inset: 4px -2px 1px 4px; border: 1.3px solid var(--sea); border-radius: 50%; transform: rotate(-28deg); }
-    .brand-mark::after { content: ""; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--action); right: -2px; top: 2px; }
-    .nav-links { display: flex; align-items: center; gap: 34px; margin-left: auto; }
-    .nav-links a { min-height: 44px; display: inline-flex; align-items: center; color: var(--ink-2); font-size: 14px; font-weight: 550; transition: color .2s ease; }
-    .nav-links a:hover { color: var(--action); }
-    .icon-button { border: 1px solid var(--line); background: transparent; width: 44px; height: 44px; border-radius: 50%; display: inline-grid; place-items: center; cursor: pointer; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
-    .icon-button:hover { background: var(--surface); border-color: var(--line-strong); transform: translateY(-1px); }
-    .icon-button svg { width: 18px; height: 18px; }
-    .mobile-menu { display: none; }
-
-    .hero {
-      min-height: calc(100svh - var(--nav-h));
-      display: grid;
-      grid-template-columns: minmax(360px, .84fr) minmax(0, 1.16fr);
-      align-items: center;
-      width: var(--wrap);
-      margin: 0 auto;
-      padding: 6px 0 54px;
-      position: relative;
-      isolation: isolate;
-    }
-    .hero-copy { padding: 36px 0 54px; max-width: 540px; position: relative; z-index: 2; }
-    .kicker { margin: 0 0 24px; display: inline-flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; font-weight: 600; letter-spacing: .01em; }
-    .kicker::before { content: ""; width: 25px; height: 1px; background: var(--action); }
-    h1, h2, h3, p { margin-top: 0; }
-    h1 { font-size: clamp(42px, 5.1vw, 72px); line-height: .99; letter-spacing: -.065em; font-weight: 560; max-width: 610px; margin: 0 0 26px; }
-    h1 .soft { color: var(--muted); font-weight: 430; }
-    .hero-lede { color: var(--ink-2); font-size: 18px; line-height: 1.55; max-width: 455px; margin: 0 0 32px; }
-    .primary-button { display: inline-flex; align-items: center; gap: 16px; min-height: 54px; padding: 0 22px 0 24px; border: 0; border-radius: 999px; background: var(--action); color: var(--action-ink); font-weight: 650; font-size: 15px; cursor: pointer; box-shadow: 0 7px 16px rgba(29,98,85,.15); transition: background .2s ease, transform .2s ease, box-shadow .2s ease; }
-    .primary-button:hover { background: var(--action-hover); transform: translateY(-2px); box-shadow: 0 12px 22px rgba(29,98,85,.19); }
-    .primary-button:active { transform: translateY(0) scale(.985); }
-    .button-arrow { display: inline-grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: currentColor; background: rgba(255,255,255,.15); }
-    .button-arrow svg { width: 14px; height: 14px; }
-    .hero-facts { display: flex; align-items: center; gap: 20px; margin: 18px 0 0 4px; color: var(--muted); font-size: 13px; }
-    .hero-facts span { display: inline-flex; align-items: center; gap: 7px; }
-    .hero-facts span + span::before { content: ""; width: 3px; height: 3px; border-radius: 50%; background: var(--muted-2); margin-right: 12px; }
-    .hero-explore { min-height: 44px; display: inline-flex; align-items: center; gap: 12px; margin-top: 72px; color: var(--muted); font-size: 13px; font-weight: 600; }
-    .hero-explore .down { width: 30px; height: 30px; border: 1px solid var(--line-strong); border-radius: 50%; display: inline-grid; place-items: center; transition: transform .2s ease, background .2s ease; }
-    .hero-explore:hover .down { transform: translateY(3px); background: var(--surface); }
-    .hero-explore svg { width: 14px; height: 14px; }
-
-    .hero-art {
-      min-height: 630px;
-      height: min(72vh, 720px);
-      position: relative;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
-      border-radius: 42% 45% 38% 40% / 45% 39% 47% 42%;
-      background:
-        radial-gradient(ellipse at 55% 49%, rgba(220,242,230,.94) 0%, rgba(224,239,230,.54) 32%, rgba(232,240,234,.10) 63%, transparent 75%),
-        radial-gradient(ellipse at 77% 21%, rgba(189,221,218,.55), transparent 43%),
-        radial-gradient(ellipse at 22% 80%, rgba(201,225,213,.47), transparent 42%);
-      margin-right: -50px;
-    }
-    .hero-art::before { content: ""; position: absolute; inset: 4% 6%; border: 1px solid rgba(73,124,109,.12); border-radius: 50%; transform: rotate(-14deg) scaleX(1.05); }
-    .hero-art::after { content: ""; position: absolute; inset: 9% 1%; border: 1px solid rgba(73,124,109,.10); border-radius: 50%; transform: rotate(18deg) scaleY(.89); }
-    .contour-lines { position: absolute; width: 120%; height: 100%; inset: 0 -10%; opacity: .48; pointer-events: none; }
-    .orb-wrap { position: relative; z-index: 2; width: min(75%, 570px); aspect-ratio: 1; display: grid; place-items: center; }
-    .orb-svg { width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 34px 36px rgba(45,104,89,.12)); }
-    .orb-svg .glass-body { transform-box: fill-box; transform-origin: center; transition: transform var(--phase-duration, 4s) cubic-bezier(.2,.72,.19,1); }
-    .orb-svg .wave-a, .orb-svg .wave-b { transform-origin: center; }
-    .hero-art[data-phase="inhale"] .glass-body { transform: scale(1.105); }
-    .hero-art[data-phase="hold"] .glass-body { transform: scale(1.105); }
-    .hero-art[data-phase="exhale"] .glass-body { transform: scale(.91); }
-    .orb-label { position: absolute; z-index: 4; text-align: center; width: 54%; pointer-events: none; color: #153f37; transition: opacity .25s ease; }
-    .orb-label strong { display: block; font-size: clamp(20px, 2.2vw, 29px); letter-spacing: -.055em; font-weight: 560; line-height: 1.12; }
-    .orb-label span { display: block; margin-top: 8px; color: rgba(21,63,55,.72); font-size: 15px; font-variant-numeric: tabular-nums; }
-     .orb-serial { position: absolute; top: 15%; right: 10%; font-size: 13px; color: var(--muted); letter-spacing: .05em; }
-    .orb-caption { position: absolute; bottom: 11%; right: 8%; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 13px; }
-    .orb-caption::before { content: ""; width: 30px; height: 1px; background: var(--muted-2); }
-    .intro-controls { display: none; align-items: center; flex-wrap: wrap; gap: 9px; margin-top: 22px; }
-    .intro-controls.visible { display: flex; }
-    .text-button { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; background: transparent; padding: 10px 14px; color: var(--ink-2); font-size: 13px; font-weight: 600; cursor: pointer; transition: background .2s ease, border .2s ease; }
-    .text-button:hover { background: var(--surface); border-color: var(--line-strong); }
-    .text-button svg { width: 15px; height: 15px; }
-    .intro-progress { display: none; width: min(100%, 300px); margin-top: 22px; }
-    .intro-progress.visible { display: block; }
-    .progress-track { height: 3px; background: var(--line); overflow: hidden; border-radius: 10px; }
-    .progress-value { height: 100%; width: 0; background: var(--action); border-radius: inherit; transition: width .25s linear; }
-    .progress-meta { display: flex; justify-content: space-between; margin-top: 9px; color: var(--muted); font-size: 13px; }
-    .hero.is-active .hero-lede { max-width: 390px; }
-    .hero.is-complete .hero-art { background: radial-gradient(ellipse at 50% 50%, rgba(219,239,225,.86), rgba(232,242,235,.20) 64%, transparent 78%); }
-
-    .section { padding: 112px 0; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 40px; margin-bottom: 46px; }
-    .section-head h2 { font-size: clamp(35px, 4vw, 54px); line-height: 1.02; letter-spacing: -.06em; font-weight: 540; margin: 0; max-width: 640px; }
-    .section-head p { color: var(--muted); max-width: 360px; margin: 0 2px 2px 0; font-size: 16px; }
-    .section-index { color: var(--muted-2); font-size: 13px; font-weight: 650; margin-bottom: 16px; }
-    .category-section { background: var(--paper-2); position: relative; overflow: hidden; }
-    .category-section::before { content: ""; position: absolute; width: 520px; height: 520px; border-radius: 50%; border: 1px solid var(--line); right: -190px; top: 85px; box-shadow: 0 0 0 32px rgba(120,173,150,.035), 0 0 0 78px rgba(120,173,150,.025); }
-    .category-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 15px; position: relative; }
-    .category-tile {
-      min-height: 235px; border-radius: var(--radius-lg); overflow: hidden; padding: 25px 28px; display: flex; flex-direction: column; justify-content: space-between;
-      position: relative; isolation: isolate; background: var(--tile-ground, #dcebe2); color: #173b33; transition: transform .25s ease, box-shadow .25s ease;
-    }
-    .category-tile:hover { transform: translateY(-3px); box-shadow: var(--shadow-soft); }
-    .category-tile:nth-child(1) { grid-column: span 7; min-height: 270px; }
-    .category-tile:nth-child(2) { grid-column: span 5; min-height: 270px; }
-    .category-tile:nth-child(3), .category-tile:nth-child(4), .category-tile:nth-child(5) { grid-column: span 4; }
-    .category-tile:nth-child(6) { grid-column: span 12; min-height: 170px; }
-    .category-tile[data-tone="mint"] { --tile-ground: #dbeae0; --orb-one:#d4f0dd; --orb-two:#85b9a6; }
-    .category-tile[data-tone="blue"] { --tile-ground: #dce9e9; --orb-one:#d4f0ed; --orb-two:#83b9c0; }
-    .category-tile[data-tone="peach"] { --tile-ground: #efe3d6; --orb-one:#fae8ce; --orb-two:#d7a77f; }
-    .category-tile[data-tone="rose"] { --tile-ground: #ecdfdc; --orb-one:#f7e7e1; --orb-two:#d4a7a0; }
-    .category-tile[data-tone="stone"] { --tile-ground: #e3e9df; --orb-one:#e9f0dc; --orb-two:#b6c39b; }
-    .category-tile[data-tone="gold"] { --tile-ground: #eee6d4; --orb-one:#f8ebc9; --orb-two:#cfad75; }
-    .tile-top { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
-    .tile-number { font-size: 13px; color: #36534b; font-variant-numeric: tabular-nums; }
-    .tile-mark { width: 31px; height: 31px; border: 1px solid rgba(23,59,51,.28); display: grid; place-items: center; border-radius: 50%; }
-    .tile-mark svg { width: 14px; height: 14px; }
-    .tile-copy { z-index: 2; position: relative; max-width: 300px; }
-    .category-tile h3 { font-size: clamp(23px, 2.3vw, 32px); line-height: 1.05; letter-spacing: -.055em; font-weight: 570; margin: 0 0 9px; }
-    .category-tile p { max-width: 250px; color: #36534b; margin: 0; font-size: 16px; line-height: 1.5; }
-    .tile-count { display: block; margin-top: 18px; color: #36534b; font-size: 13px; font-weight: 650; }
-    .tile-orb { position: absolute; width: 190px; aspect-ratio: 1; right: 5%; top: 8%; border-radius: 50%; background: radial-gradient(circle at 31% 27%, rgba(255,255,255,.9), transparent 23%), radial-gradient(circle at 62% 68%, var(--orb-two), transparent 63%), radial-gradient(circle at 33% 30%, var(--orb-one), #c3dfd2 68%, #8ab5a7 100%); box-shadow: inset -12px -17px 34px rgba(53,100,83,.16), inset 7px 8px 15px rgba(255,255,255,.7), 0 20px 40px rgba(55,100,82,.12); opacity: .88; }
-    .tile-orb::before { content: ""; position: absolute; inset: 9%; border-radius: 50%; border: 1px solid rgba(255,255,255,.7); transform: rotate(-28deg) scaleX(.8); }
-    .tile-orb::after { content: ""; position: absolute; left: -15%; top: 48%; width: 130%; height: 25%; border: 1px solid rgba(255,255,255,.65); border-radius: 50%; transform: rotate(-24deg); box-shadow: 0 8px 12px rgba(255,255,255,.16); }
-    .category-tile:nth-child(1) .tile-orb { width: 260px; right: 7%; top: 2%; }
-    .category-tile:nth-child(2) .tile-orb { width: 220px; right: 0; top: 12%; }
-    .category-tile:nth-child(3) .tile-orb, .category-tile:nth-child(4) .tile-orb, .category-tile:nth-child(5) .tile-orb { width: 154px; right: -5%; top: 8%; }
-    .category-tile:nth-child(6) .tile-orb { width: 170px; right: 10%; top: 1%; }
-    .category-tile:nth-child(6) .tile-copy { max-width: 520px; }
-    .category-tile:nth-child(6) .tile-orb { background: radial-gradient(circle at 31% 27%, rgba(255,255,255,.92), transparent 23%), radial-gradient(circle at 62% 68%, var(--orb-two), transparent 63%), radial-gradient(circle at 33% 30%, var(--orb-one), #e6d4ab 68%, #c9a772 100%); }
-    .category-tile:hover .tile-orb { transform: translateY(-4px) rotate(3deg); transition: transform .6s cubic-bezier(.2,.7,.2,1); }
-    .category-tile:nth-child(3) .tile-orb { background: radial-gradient(circle at 31% 27%, rgba(255,255,255,.9), transparent 23%), radial-gradient(circle at 62% 68%, var(--orb-two), transparent 63%), radial-gradient(circle at 33% 30%, var(--orb-one), #f2d6bd 68%, #cf9e7b 100%); }
-    .category-tile:nth-child(4) .tile-orb { background: radial-gradient(circle at 31% 27%, rgba(255,255,255,.9), transparent 23%), radial-gradient(circle at 62% 68%, var(--orb-two), transparent 63%), radial-gradient(circle at 33% 30%, var(--orb-one), #efd7d1 68%, #cf9f99 100%); }
-
-    .library-section { background: var(--surface); }
-    .library-topline { display: flex; justify-content: space-between; gap: 24px; align-items: end; margin-bottom: 30px; }
-    .library-topline h2 { margin: 0; font-size: clamp(34px, 4vw, 52px); line-height: 1.02; letter-spacing: -.06em; font-weight: 540; }
-    .library-topline p { max-width: 365px; margin: 0 0 2px; color: var(--muted); font-size: 16px; }
-    .library-shell { display: grid; grid-template-columns: 220px minmax(0,1fr); gap: 42px; align-items: start; }
-    .filter-rail { border-top: 1px solid var(--line-strong); padding-top: 18px; }
-    .filter-rail h3 { font-size: 13px; color: var(--muted); font-weight: 650; margin: 0 0 14px; }
-    .filter-list { display: grid; gap: 4px; }
-    .filter-button { min-height: 44px; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 11px; border: 0; border-radius: 10px; background: transparent; color: var(--ink-2); text-align: left; font-size: 15px; cursor: pointer; transition: background .18s ease, color .18s ease; }
-    .filter-button:hover { background: var(--paper-2); }
-    .filter-button[aria-pressed="true"] { color: var(--action); background: var(--paper-2); font-weight: 650; }
-    .filter-count { color: var(--muted-2); font-size: 13px; font-variant-numeric: tabular-nums; }
-    .search-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
-    .search-box { width: min(400px,100%); display: flex; align-items: center; gap: 11px; border: 1px solid var(--line-strong); background: var(--paper); padding: 0 14px; height: 47px; border-radius: 999px; }
-    .search-box svg { width: 17px; height: 17px; color: var(--muted); flex: 0 0 auto; }
-    .search-box input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); font-size: 15px; min-width: 0; }
-    .search-box input::placeholder { color: var(--muted-2); }
-    .result-count { color: var(--muted); font-size: 13px; white-space: nowrap; }
-    .exercise-list { border-top: 1px solid var(--line-strong); }
-    .exercise-row { display: grid; grid-template-columns: 35px minmax(170px,1.35fr) minmax(115px,.75fr) 86px 40px 112px; align-items: center; gap: 17px; min-height: 91px; border-bottom: 1px solid var(--line); padding: 15px 5px; transition: background .2s ease; }
-    .exercise-row:hover { background: color-mix(in srgb, var(--paper-2) 60%, transparent); }
-    .exercise-index { color: var(--muted-2); font-size: 13px; font-variant-numeric: tabular-nums; }
-    .exercise-name { font-size: 16px; font-weight: 650; letter-spacing: -.025em; margin: 0 0 3px; }
-    .exercise-desc { color: var(--muted); font-size: 14px; margin: 0; line-height: 1.35; }
-    .exercise-use { color: var(--muted-2); font-size: 12px; margin: 5px 0 0; line-height: 1.35; }
-    .practice-use { padding: 0 0 17px; margin: -5px 0 18px; border-bottom: 1px solid var(--line); }
-    .practice-use strong { display:block; color:var(--muted); font-size:12px; letter-spacing:.045em; margin-bottom:5px; }
-    .practice-use p { margin:0; color:var(--ink-2); font-size:14px; line-height:1.45; }
-    .exercise-pattern { display: flex; align-items: center; gap: 4px; color: var(--muted); font-size: 13px; }
-    .pattern-segment { height: 5px; min-width: 10px; border-radius: 99px; background: var(--sea); opacity: .9; }
-    .pattern-segment.hold { background: var(--peach); }
-    .exercise-tag { display: inline-flex; width: max-content; max-width: 100%; border-radius: 999px; padding: 5px 9px; background: var(--paper-2); color: var(--muted); font-size: 13px; white-space: nowrap; }
-    .favorite-toggle { width:40px; height:40px; display:inline-grid; place-items:center; justify-self:end; border:1px solid var(--line); border-radius:50%; background:transparent; color:var(--muted); cursor:pointer; }
-    .favorite-toggle:hover, .favorite-toggle[aria-pressed="true"] { color:#b45f68; border-color:color-mix(in srgb, #b45f68 45%, var(--line)); background:color-mix(in srgb, #b45f68 9%, transparent); }
-    .favorite-toggle svg { width:18px; height:18px; }
-    .data-tools { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; padding:13px 0; border-bottom:1px solid var(--line); }
-    .data-tools-note { color:var(--muted); font-size:12px; }
-    .data-tool-actions { display:flex; gap:8px; flex-wrap:wrap; }
-    .data-tool-button { min-height:38px; padding:7px 13px; border:1px solid var(--line-strong); border-radius:999px; background:transparent; color:var(--action); font:600 12px ui-sans-serif,system-ui,sans-serif; cursor:pointer; }
-    .data-tool-button:hover { background:var(--paper-2); border-color:var(--action); }
-    .row-action { min-height: 44px; justify-self: end; display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; border: 1px solid var(--line-strong); border-radius: 999px; background: transparent; color: var(--action); font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; transition: background .18s ease, border-color .18s ease; }
-    .row-action:hover { background: var(--paper-2); border-color: var(--action); }
-    .row-action svg { width: 13px; height: 13px; }
-    .empty-state { display: none; padding: 55px 25px; text-align: center; color: var(--muted); }
-    .empty-state.visible { display: block; }
-
-    .practice-note { background: var(--paper-2); padding: 70px 0 74px; }
-    .note-layout { display: grid; grid-template-columns: .7fr 1.3fr; gap: 70px; align-items: start; }
-    .note-layout h2 { font-size: 34px; line-height: 1.04; letter-spacing: -.055em; font-weight: 550; margin: 0; max-width: 340px; }
-    .note-copy { max-width: 680px; }
-    .note-copy p { color: var(--ink-2); margin: 0 0 14px; font-size: 16px; }
-    .note-copy p:last-child { margin-bottom: 0; }
-    .closing { padding: 66px 0 38px; background: var(--paper); }
-    .closing-inner { display: flex; justify-content: space-between; align-items: end; gap: 30px; }
-    .closing h2 { font-size: clamp(36px, 5vw, 60px); line-height: 1; letter-spacing: -.065em; font-weight: 550; margin: 0 0 13px; }
-    .closing p { margin: 0; color: var(--muted); max-width: 400px; font-size: 15px; }
-    .closing-links { display: flex; gap: 22px; align-items: center; color: var(--muted); font-size: 13px; }
-    .closing-links a { min-height: 44px; display: inline-flex; align-items: center; }
-    .closing-links a:hover { color: var(--action); }
-    .legal-line { display: flex; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); margin-top: 55px; padding-top: 18px; color: var(--muted-2); font-size: 13px; }
-
-    .practice-screen { position: fixed; z-index: 50; inset: 0; display: none; overflow: auto; background: var(--paper); }
-    .practice-screen.open { display: block; animation: screenIn .3s ease both; }
-    .practice-top { height: 74px; width: min(1320px, calc(100% - 64px)); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-    .practice-top .back-button { min-height: 44px; border: 0; background: transparent; display: inline-flex; align-items: center; gap: 10px; color: var(--ink-2); font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 0; }
-    .practice-top .back-button svg { width: 17px; height: 17px; }
-    .practice-top-right { display: flex; align-items: center; gap: 8px; }
-    .practice-content { width: min(1160px, calc(100% - 64px)); margin: 0 auto; min-height: calc(100svh - 74px); display: grid; grid-template-columns: .8fr 1.2fr; gap: 48px; align-items: center; padding: 30px 0 70px; }
-    .practice-details { max-width: 430px; }
-    .practice-category { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
-    .practice-details h2 { font-size: clamp(38px, 5vw, 60px); line-height: .98; letter-spacing: -.065em; font-weight: 550; margin: 0 0 17px; }
-    .practice-details > p { color: var(--ink-2); font-size: 16px; margin: 0 0 23px; }
-    .practice-meta { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 28px; }
-    .meta-chip { font-size: 13px; padding: 7px 10px; color: var(--muted); background: var(--surface-2); border-radius: 999px; }
-    .pattern-detail { border-top: 1px solid var(--line-strong); border-bottom: 1px solid var(--line-strong); padding: 16px 0; margin-bottom: 24px; }
-    .pattern-detail strong { display: block; font-size: 13px; color: var(--muted); margin-bottom: 10px; }
-    .pattern-flow { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
-    .pattern-step { color: var(--ink); background: var(--surface-2); padding: 8px 10px; font-size: 14px; border-radius: 9px; }
-    .pattern-step small { display: block; color: var(--muted); font-size: 13px; }
-    .practice-caution { color: var(--muted); font-size: 14px; line-height: 1.5; margin: 0 0 25px; }
-    .practice-action-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .intention-field { display:grid; gap:7px; margin:0 0 18px; max-width:360px; }
-    .intention-field label { color:var(--muted); font-size:12px; font-weight:650; letter-spacing:.035em; }
-    .intention-select { width:100%; min-height:46px; padding:0 13px; border:1px solid var(--line-strong); border-radius:12px; background:var(--paper); color:var(--ink); font:inherit; }
-    .intention-hint { margin:0; color:var(--muted); font-size:13px; line-height:1.45; }
-    .practice-options { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px; }
-    .hold-skip-option { display:inline-flex; align-items:center; gap:9px; min-height:44px; padding:8px 12px; border:1px solid var(--line); border-radius:12px; color:var(--ink-2); font-size:13px; cursor:pointer; }
-    .hold-skip-option input { width:17px; height:17px; accent-color:var(--action); }
-    .hold-skip-note { flex-basis:100%; margin:0; color:var(--muted); font-size:12px; line-height:1.4; }
-    .practice-stage { min-height: 550px; border-radius: 36px; background: radial-gradient(ellipse at 50% 48%, #d4e9df 0%, #e5efe8 43%, #edf3ed 72%); display: grid; place-items: center; position: relative; overflow: hidden; }
-    html[data-theme="dark"] .practice-stage { background: radial-gradient(ellipse at 50% 48%, #244f43 0%, #18372f 48%, #142b25 75%); }
-    html[data-theme="dark"] .session-topline, html[data-theme="dark"] .session-message { color: rgba(232,242,237,.84); }
-    html[data-theme="dark"] .practice-done { background: rgba(16,31,28,.95); color: var(--ink); }
-    .practice-stage::before, .practice-stage::after { content: ""; position: absolute; width: 75%; aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(65,122,103,.16); transform: rotate(-22deg) scaleY(.75); }
-    .practice-stage::after { width: 92%; transform: rotate(24deg) scaleY(.63); border-color: rgba(65,122,103,.1); }
-    .practice-orb-wrap { width: min(72%, 410px); aspect-ratio: 1; display: grid; place-items: center; position: relative; z-index: 2; }
-    .practice-orb-wrap .orb-svg { width: 100%; }
-    .practice-stage[data-phase="inhale"] .glass-body { transform: scale(1.1); }
-    .practice-stage[data-phase="hold"] .glass-body { transform: scale(1.1); }
-    .practice-stage[data-phase="exhale"] .glass-body { transform: scale(.9); }
-    .practice-stage .orb-label { width: 58%; }
-    .session-topline { position: absolute; z-index: 3; top: 28px; left: 32px; right: 32px; display: flex; justify-content: space-between; color: rgba(22,49,43,.72); font-size: 13px; }
-    .session-controls { display:none; position: absolute; z-index: 3; bottom: 31px; left: 0; right: 0; justify-content: center; align-items: center; gap: 10px; }
-    .practice-stage.session-active .session-controls { display:flex; }
-    .practice-stage.session-complete .session-controls { display:none; }
-    .session-controls .icon-button { background: rgba(255,255,255,.55); border-color: rgba(255,255,255,.8); color: #234d42; }
-    .session-controls .main-control { width: 52px; height: 52px; background: var(--action); color: var(--action-ink); border-color: transparent; }
-    .session-controls .main-control svg { width: 20px; height: 20px; }
-    .duration-select { height: 44px; padding: 0 13px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--ink-2); background: var(--surface); font-size: 13px; }
-    .session-message { position: absolute; bottom: 100px; z-index: 3; color: rgba(22,49,43,.78); font-size: 13px; text-align: center; }
-    .practice-done { display: none; text-align: center; position: absolute; z-index: 5; inset: 0; align-items: center; justify-content: center; flex-direction: column; background: rgba(229,239,232,.93); padding: 28px; }
-    .practice-done.visible { display: flex; }
-    .practice-done h3 { font-size: 32px; letter-spacing: -.05em; margin: 0 0 8px; }
-    .practice-done p { color: var(--muted); max-width: 330px; margin: 0 0 22px; }
-    .mobile-practice-bar { display: none; }
-
-    @keyframes screenIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-
-    @media (max-width: 900px) {
-      .library-shell { grid-template-columns: 1fr; gap: 20px; }
-      .filter-rail { border-top: 0; padding: 0; }
-      .filter-rail h3 { margin-bottom: 9px; }
-      .filter-list { display:flex; flex-wrap:wrap; gap:8px; overflow:visible; padding-bottom:5px; }
-      .filter-button { width:auto; flex:0 0 auto; border:1px solid var(--line); border-radius:999px; padding:8px 12px; }
-      .filter-count { display:none; }
-    }
-    @media (max-width: 1050px) {
-      :root { --wrap: min(100% - 52px, 920px); }
-      .hero { grid-template-columns: .88fr 1.12fr; }
-      .hero-art { margin-right: -25px; min-height: 520px; }
-      .orb-wrap { width: 82%; }
-      .category-tile:nth-child(1), .category-tile:nth-child(2) { min-height: 245px; }
-      .category-tile:nth-child(1) { grid-column: span 7; }
-      .category-tile:nth-child(2) { grid-column: span 5; }
-      .category-tile:nth-child(3), .category-tile:nth-child(4), .category-tile:nth-child(5) { grid-column: span 4; }
-    .category-tile:nth-child(6) { grid-column: span 12; min-height: 170px; }
-      .exercise-row { grid-template-columns: 28px minmax(145px,1.3fr) minmax(100px,.7fr) 76px 104px; gap: 11px; }
-      .practice-content { gap: 28px; }
-      .practice-stage { min-height: 490px; }
-    }
-    @media (max-width: 760px) {
-      :root { --wrap: calc(100% - 40px); --nav-h: 68px; }
-      .topbar { gap: 10px; }
-      .brand { min-width: 0; }
-      .nav-links { gap: 17px; }
-      .nav-links a { font-size: 13px; }
-      .topbar > .icon-button { width: 44px; height: 44px; }
-      .hero { min-height: auto; grid-template-columns: 1fr; padding: 26px 0 70px; }
-      .hero-copy { padding: 22px 0 12px; max-width: 620px; }
-      .kicker { margin-bottom: 16px; }
-      h1 { max-width: 650px; font-size: clamp(42px, 8vw, 62px); }
-      .hero-lede { font-size: 16px; max-width: 520px; margin-bottom: 24px; }
-      .hero-explore { margin-top: 32px; }
-      .hero-art { grid-row: 2; min-height: 400px; height: min(105vw, 500px); margin: 8px -15px 0; border-radius: 40% 42% 37% 38% / 40% 37% 45% 43%; }
-      .orb-wrap { width: min(76%, 420px); }
-      .orb-serial { right: 8%; top: 10%; }
-      .orb-caption { bottom: 8%; right: 6%; }
-      .section { padding: 80px 0; }
-      .section-head, .library-topline { display: block; margin-bottom: 30px; }
-      .section-head p, .library-topline p { margin-top: 16px; }
-      .category-grid { gap: 10px; }
-      .category-tile { padding: 20px; min-height: 228px; }
-      .category-tile:nth-child(1), .category-tile:nth-child(2) { grid-column: span 6; min-height: 250px; }
-      .category-tile:nth-child(3), .category-tile:nth-child(4), .category-tile:nth-child(5) { grid-column: span 4; min-height: 208px; }
-      .category-tile:nth-child(1) .tile-orb, .category-tile:nth-child(2) .tile-orb { width: 155px; right: -5%; top: 10%; }
-      .category-tile:nth-child(3) .tile-orb, .category-tile:nth-child(4) .tile-orb, .category-tile:nth-child(5) .tile-orb { width: 120px; right: -15%; top: 8%; }
-      .category-tile:nth-child(6) .tile-orb { width: 150px; right: 4%; top: 8%; }
-      .category-tile:nth-child(3) .tile-copy, .category-tile:nth-child(4) .tile-copy, .category-tile:nth-child(5) .tile-copy { max-width: 170px; }
-      .category-tile:nth-child(3) p, .category-tile:nth-child(4) p, .category-tile:nth-child(5) p { max-width: 145px; }
-      .library-shell { grid-template-columns: 1fr; gap: 20px; }
-      .filter-rail { border-top: 0; padding: 0; }
-      .filter-rail h3 { margin-bottom: 9px; }
-      .filter-list { display: flex; flex-wrap: wrap; gap: 8px; overflow: visible; padding-bottom: 5px; }
-      .filter-button { width: auto; flex: 0 0 auto; border: 1px solid var(--line); border-radius: 999px; padding: 8px 12px; }
-      .filter-count { display: none; }
-      .exercise-row { grid-template-columns: 25px minmax(0,1fr) auto; gap: 8px 12px; padding: 14px 3px; }
-      .exercise-pattern { grid-column: 2; grid-row: 2; }
-      .exercise-tag { display: none; }
-      .row-action { grid-column: 3; grid-row: 1 / span 2; }
-      .practice-note { padding: 62px 0; }
-      .note-layout { grid-template-columns: 1fr; gap: 20px; }
-      .note-layout h2 { max-width: 520px; }
-      .closing-inner { display: block; }
-      .closing-links { margin-top: 30px; }
-      .legal-line { margin-top: 40px; flex-wrap: wrap; }
-      .practice-top { width: calc(100% - 40px); height: 64px; }
-      .practice-content { width: calc(100% - 40px); min-height: auto; display: flex; flex-direction: column; align-items: stretch; gap: 23px; padding: 24px 0 45px; }
-      .practice-details { max-width: none; }
-      .practice-details h2 { font-size: 42px; margin-bottom: 10px; }
-      .practice-details > p { margin-bottom: 13px; }
-      .practice-meta { margin-bottom: 15px; }
-      .pattern-detail { margin-bottom: 14px; padding: 12px 0; }
-      .practice-caution { margin-bottom: 15px; }
-      .practice-stage { min-height: 390px; border-radius: 28px; }
-      .practice-orb-wrap { width: min(70%, 290px); }
-      .session-topline { top: 18px; left: 18px; right: 18px; }
-      .session-controls { bottom: 18px; }
-      .session-message { bottom: 82px; }
-    }
-    @media (max-width: 500px) {
-      .nav-links a[href="#practice-note"] { display:none; }
-      :root { --wrap: calc(100% - 32px); }
-      .brand { font-size: 16px; }
-      .brand-mark { width: 24px; height: 24px; }
-      .nav-links { gap: 12px; }
-      .nav-links a { font-size: 13px; }
-      .topbar > .icon-button { width: 44px; height: 44px; }
-      .hero { padding-top: 20px; }
-      h1 { font-size: clamp(40px, 11vw, 54px); }
-      .hero-facts { flex-wrap: wrap; gap: 8px 13px; }
-      .hero-facts span + span::before { margin-right: 7px; }
-      .hero-art { min-height: 330px; height: 92vw; margin-inline: -10px; }
-      .orb-wrap { width: 82%; }
-      .orb-label strong { font-size: 21px; }
-      .orb-label span { font-size: 13px; }
-      .section { padding: 66px 0; }
-      .section-head h2, .library-topline h2 { font-size: 38px; }
-      .category-grid { grid-template-columns: repeat(6, 1fr); }
-      .category-tile { grid-column: span 6 !important; min-height: 190px !important; padding: 18px 20px; }
-      .category-tile:nth-child(1), .category-tile:nth-child(2) { min-height: 212px !important; }
-      .category-tile .tile-orb { width: 160px !important; right: 2% !important; top: 5% !important; }
-      .category-tile h3 { font-size: 26px; }
-      .category-tile p { max-width: 220px !important; }
-      .search-row { align-items: center; }
-      .result-count { font-size: 13px; }
-      .exercise-row { grid-template-columns: 20px minmax(0,1fr) auto; gap: 6px 9px; min-height: 88px; }
-      .exercise-name { font-size: 15px; }
-      .exercise-desc { font-size: 13px; }
-      .row-action { padding: 8px 10px; font-size: 13px; }
-      .practice-top { width: calc(100% - 32px); }
-      .practice-content { width: calc(100% - 32px); }
-      .practice-stage { min-height: 335px; }
-      .practice-done h3 { font-size: 27px; }
-      .closing { padding-top: 56px; }
-      .closing-links { gap: 15px; flex-wrap: wrap; }
-    }
-    .help-section { display:grid; grid-template-columns:minmax(220px,.8fr) minmax(0,1.2fr); gap:clamp(32px,7vw,100px); padding-top:88px; padding-bottom:96px; }
-    .help-heading h2 { margin:0 0 14px; font-size:clamp(30px,4vw,46px); line-height:1.08; letter-spacing:-.045em; }
-    .help-heading p:last-child { max-width:390px; color:var(--muted); }
-    .help-list { border-top:1px solid var(--line); }
-    .help-list details { border-bottom:1px solid var(--line); padding:19px 2px; }
-    .help-list summary { cursor:pointer; font-weight:620; color:var(--ink); list-style:none; display:flex; align-items:center; justify-content:space-between; gap:18px; }
-    .help-list summary::-webkit-details-marker { display:none; }
-    .help-list summary::after { content:"+"; color:var(--action); font-size:22px; font-weight:400; }
-    .help-list details[open] summary::after { content:"−"; }
-    .help-list details p { max-width:680px; margin:12px 28px 2px 0; color:var(--muted); font-size:14px; }
-    .footer-install { border:1px solid var(--line-strong); background:transparent; color:var(--ink-2); border-radius:999px; padding:9px 14px; cursor:pointer; font:inherit; font-size:13px; }
-    .footer-install:hover { background:var(--surface); }
-    .footer-install[hidden] { display:none; }
-    @media (max-width:760px) { .help-section { grid-template-columns:1fr; gap:24px; padding-top:64px; padding-bottom:70px; } }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
-    }
-  </style>
+  <script>try{var t=localStorage.getItem('breathe-theme');if(t!=='dark'&&t!=='light')t=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';document.documentElement.dataset.theme=t;if(t==='dark')document.querySelector('meta[name="theme-color"]').content='#0f1e1b'}catch(e){}</script>
+  <link rel="stylesheet" href="./assets/css/styles.css">
+  <script defer src="./assets/js/exercises.js"></script>
+  <script defer src="./assets/js/app.js"></script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","name":"Breathe","url":"https://melvinvarghese.github.io/Breathe/","description":"A calm, private space for guided breathing exercises.","applicationCategory":"HealthApplication","operatingSystem":"Any (web browser)","browserRequirements":"Requires a modern browser","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I use a breathing exercise?","acceptedAnswer":{"@type":"Answer","text":"Choose an exercise, read its pattern and guidance, then select a comfortable session length. Start when you are ready. Follow the orb and phase words gently; never force your breath to match a count."}},{"@type":"Question","name":"Can I skip the introduction?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can scroll to the exercise library at any time. The introductory three-cycle guide is optional."}},{"@type":"Question","name":"Does Breathe collect my information?","acceptedAnswer":{"@type":"Answer","text":"No account or analytics are used. Your theme, voice preference and recent practice details are stored only in this browser when supported. They are not sent to a server."}},{"@type":"Question","name":"Can I use Breathe offline?","acceptedAnswer":{"@type":"Answer","text":"After the first successful visit, supported browsers can keep the app available offline. Install it from your browser menu when the install option is available."}}]}]}</script>
 </head>
 <body>
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <defs>
+      <radialGradient id="g-fill" cx="31%" cy="24%" r="78%"><stop offset="0" stop-color="#fff" stop-opacity=".96"/><stop offset=".2" stop-color="#e9fff4" stop-opacity=".75"/><stop offset=".47" stop-color="#a6d8c9" stop-opacity=".4"/><stop offset=".76" stop-color="#72b9ae" stop-opacity=".34"/><stop offset="1" stop-color="#dff5e9" stop-opacity=".8"/></radialGradient>
+      <linearGradient id="g-edge" x1=".12" y1=".08" x2=".89" y2=".91"><stop offset="0" stop-color="#fff" stop-opacity=".94"/><stop offset=".26" stop-color="#8bd1bd" stop-opacity=".8"/><stop offset=".56" stop-color="#fff" stop-opacity=".4"/><stop offset=".83" stop-color="#75b9bf" stop-opacity=".85"/><stop offset="1" stop-color="#fff" stop-opacity=".94"/></linearGradient>
+      <linearGradient id="g-line" x1=".08" y1=".2" x2=".96" y2=".78"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".23" stop-color="#fff" stop-opacity=".9"/><stop offset=".58" stop-color="#8fd5c3" stop-opacity=".9"/><stop offset=".84" stop-color="#fff" stop-opacity=".88"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <clipPath id="g-clip"><circle cx="280" cy="280" r="218"/></clipPath>
+      <filter id="g-blur" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="12"/></filter>
+    </defs>
+    <symbol id="orb-glass" viewBox="0 0 560 560">
+      <ellipse cx="280" cy="500" rx="150" ry="22" fill="#2f6f61" opacity=".18" filter="url(#g-blur)"/>
+      <circle cx="280" cy="280" r="218" fill="url(#g-fill)" stroke="url(#g-edge)" stroke-width="5"/>
+      <circle cx="280" cy="280" r="210" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.4"/>
+      <g clip-path="url(#g-clip)">
+        <ellipse cx="170" cy="120" rx="150" ry="67" fill="#fff" opacity=".22" filter="url(#g-blur)"/>
+        <path d="M43 255C117 185 174 187 247 232s104 76 170 58 83-58 147-27" fill="none" stroke="url(#g-line)" stroke-width="23" opacity=".58"/>
+        <path d="M39 258C113 188 170 190 243 235s104 76 170 58 83-58 147-27" fill="none" stroke="#fff" stroke-width="1.1" opacity=".8"/>
+        <path d="M40 334c75-57 132-61 204-23s113 79 179 49 82-67 146-59" fill="none" stroke="url(#g-line)" stroke-width="14" opacity=".48"/>
+        <path d="M38 346c75-57 132-61 204-23s113 79 179 49 82-67 146-59" fill="none" stroke="#fff" stroke-width="1" opacity=".72"/>
+        <path d="M64 397c76-38 142-39 204-9s118 41 183 4 77-46 114-42" fill="none" stroke="#fff" stroke-opacity=".58" stroke-width="1.2"/>
+        <path d="M77 167c48-42 94-54 150-43" fill="none" stroke="#fff" stroke-opacity=".9" stroke-width="3" stroke-linecap="round"/>
+        <path d="M101 135c35-32 71-43 111-37" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round"/>
+        <ellipse cx="143" cy="129" rx="20" ry="6" fill="#fff" opacity=".65" transform="rotate(-31 143 129)"/>
+        <path d="M400 444c46-22 75-49 91-81" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
+      </g>
+      <path d="M145 91c36-27 77-40 116-41" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".82"/>
+      <path d="M424 419c-26 31-57 52-94 63" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/>
+    </symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></symbol>
+    <symbol id="i-pause" viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" stroke-width="3"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path d="m8 5 12 7-12 7z" fill="currentColor"/></symbol>
+    <symbol id="i-restart" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-full" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></symbol>
+    <symbol id="i-heart" viewBox="0 0 24 24"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6l1.2 1.2L12 21l7.6-7.6 1.2-1.2a5.4 5.4 0 0 0 0-7.6Z"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-sound" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></symbol>
+    <symbol id="i-voice" viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M5 11v1a7 7 0 0 0 14 0v-1M12 19v3"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M19 12H5m7 7-7-7 7-7"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  </svg>
+
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="topbar" id="top">
-    <a class="brand" href="#top" aria-label="Breathe home"><span class="brand-mark" aria-hidden="true"></span><span>Breathe</span></a>
-    <nav class="nav-links" aria-label="Main navigation">
-      <a href="#categories">Categories</a>
-      <a href="#library">All exercises</a>
-      <a href="#practice-note">A note on practice</a>
-      <a href="#help">How to use</a>
-    </nav>
-    <button class="icon-button" id="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/></svg>
-    </button>
+    <div class="topbar-inner">
+      <a class="brand" href="#top" aria-label="Breathe home">
+        <svg viewBox="0 0 28 28" fill="none" aria-hidden="true"><circle cx="14" cy="14" r="12" stroke="var(--action)" stroke-width="1.5"/><ellipse cx="14" cy="14" rx="8" ry="12" stroke="var(--inhale)" stroke-width="1.4" transform="rotate(-28 14 14)"/><circle cx="21.5" cy="7.5" r="2.2" fill="var(--action)"/></svg>
+        <span translate="no">Breathe</span>
+      </a>
+      <nav class="nav-links" id="site-nav" aria-label="Main navigation">
+        <a href="#categories">Categories</a>
+        <a href="#library">All exercises</a>
+        <a href="#practice-note">A note on practice</a>
+        <a href="#help">How to use</a>
+      </nav>
+      <button class="icon-btn menu-toggle" id="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open menu"><svg class="icon"><use href="#i-menu"/></svg></button>
+      <button class="icon-btn" id="theme-toggle" type="button" aria-label="Switch to dark theme" title="Switch theme"></button>
+    </div>
   </header>
+
   <main id="main">
     <section class="hero" id="intro" aria-labelledby="hero-title">
       <div class="hero-copy">
         <p class="kicker" id="hero-kicker">A guided breathing space</p>
-        <h1 id="hero-title">Breathing exercises <span class="soft">for everyday moments.</span></h1>
-        <p class="hero-lede" id="hero-lede">Start with three short guided cycles. Then find a breathing practice for the moment you're in.</p>
-        <button class="primary-button" id="begin-intro" type="button">
-          <span id="begin-label">Begin the first exercise</span>
-          <span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
-        </button>
-        <div class="hero-facts" id="hero-facts"><span>3 guided cycles</span><span>About 36 seconds</span><span>Pause is optional</span></div>
-        <div class="intro-controls" id="intro-controls" aria-label="Introductory exercise controls">
-          <button class="text-button" id="pause-intro" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg><span>Pause</span></button>
-          <button class="text-button" id="restart-intro" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg><span>Start again</span></button>
-          <button class="text-button sound-toggle" type="button" aria-pressed="false" aria-label="Turn audio cues on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg><span>Audio cues off</span></button>
-          <button class="text-button voice-toggle" type="button" aria-pressed="false" aria-label="Turn voice guidance on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 18V5m0 0-4 4m4-4 4 4"/><path d="M5 14v1a7 7 0 0 0 14 0v-1"/></svg><span>Voice guidance off</span></button>
-          <a class="text-button" href="#categories">Skip to exercises</a>
+        <h1 id="hero-title">Breathing exercises for everyday moments.</h1>
+        <p class="hero-lede" id="hero-lede">Start with three short guided cycles. Then find a breathing practice for the moment you’re in.</p>
+        <button class="btn" id="begin-intro" type="button">Begin the first exercise</button>
+        <ul class="hero-facts" id="hero-facts"><li>3 guided cycles</li><li>About 36 seconds</li><li>Pause is optional</li></ul>
+        <div class="intro-controls" id="intro-controls" role="group" aria-label="Introductory exercise controls">
+          <button class="btn-quiet" id="pause-intro" type="button"></button>
+          <button class="btn-quiet" id="restart-intro" type="button"></button>
+          <button class="btn-quiet sound-toggle" type="button" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-sound"/></svg><span>Audio cues off</span></button>
+          <button class="btn-quiet voice-toggle" type="button" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-voice"/></svg><span>Voice guidance off</span></button>
+          <a class="btn-quiet" href="#categories">Skip to exercises</a>
         </div>
         <div class="intro-progress" id="intro-progress" aria-hidden="true">
           <div class="progress-track"><div class="progress-value" id="intro-progress-value"></div></div>
           <div class="progress-meta"><span id="intro-cycle">Cycle 1 of 3</span><span id="intro-remaining">36 seconds</span></div>
         </div>
-        <a href="#categories" class="hero-explore" id="hero-explore"><span class="down"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span><span>Scroll to browse the exercises</span></a>
+        <a href="#categories" class="scroll-cue" id="hero-explore"><svg class="icon" aria-hidden="true"><use href="#i-down"/></svg><span>Scroll to browse the exercises</span></a>
       </div>
-      <div class="hero-art" id="hero-art" data-phase="rest" aria-label="An animated glass orb that expands and contracts with the breathing guide">
-        <svg class="contour-lines" viewBox="0 0 900 700" fill="none" aria-hidden="true">
-          <path d="M-30 432C120 335 206 344 316 386c112 43 168 45 267 6 111-44 200-41 348 22" stroke="rgba(58,117,101,.22)" stroke-width="1"/>
-          <path d="M-30 458C120 361 206 370 316 412c112 43 168 45 267 6 111-44 200-41 348 22" stroke="rgba(58,117,101,.16)" stroke-width="1"/>
-          <path d="M-30 484C120 387 206 396 316 438c112 43 168 45 267 6 111-44 200-41 348 22" stroke="rgba(58,117,101,.12)" stroke-width="1"/>
-          <path d="M-20 214C106 268 204 281 306 246c114-39 172-98 290-76 107 20 170 74 318 47" stroke="rgba(58,117,101,.14)" stroke-width="1"/>
-          <path d="M-20 240C106 294 204 307 306 272c114-39 172-98 290-76 107 20 170 74 318 47" stroke="rgba(58,117,101,.10)" stroke-width="1"/>
-        </svg>
-        <span class="orb-serial" id="orb-serial">01 / 03</span>
-        <div class="orb-wrap">
-          <svg class="orb-svg" viewBox="0 0 560 560" role="img" aria-label="A translucent sea-glass sphere with fine flowing lines">
-            <defs>
-              <radialGradient id="glassFill" cx="31%" cy="24%" r="78%"><stop offset="0" stop-color="#fff" stop-opacity=".96"/><stop offset=".2" stop-color="#e9fff4" stop-opacity=".75"/><stop offset=".47" stop-color="#a6d8c9" stop-opacity=".34"/><stop offset=".76" stop-color="#72b9ae" stop-opacity=".27"/><stop offset="1" stop-color="#dff5e9" stop-opacity=".8"/></radialGradient>
-              <linearGradient id="glassEdge" x1=".12" y1=".08" x2=".89" y2=".91"><stop offset="0" stop-color="#fff" stop-opacity=".94"/><stop offset=".26" stop-color="#8bd1bd" stop-opacity=".64"/><stop offset=".56" stop-color="#fff" stop-opacity=".34"/><stop offset=".83" stop-color="#75b9bf" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity=".94"/></linearGradient>
-              <linearGradient id="currentLine" x1=".08" y1=".2" x2=".96" y2=".78"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".23" stop-color="#fff" stop-opacity=".9"/><stop offset=".58" stop-color="#8fd5c3" stop-opacity=".9"/><stop offset=".84" stop-color="#fff" stop-opacity=".88"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-              <radialGradient id="orbGlow" cx="50%" cy="52%" r="50%"><stop offset="0" stop-color="#d9f7e9" stop-opacity=".65"/><stop offset="1" stop-color="#d9f7e9" stop-opacity="0"/></radialGradient>
-              <clipPath id="orbClip"><circle cx="280" cy="280" r="218"/></clipPath>
-              <filter id="softBlur" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="12"/></filter>
-            </defs>
-            <ellipse cx="280" cy="493" rx="157" ry="24" fill="#5b9b88" opacity=".16" filter="url(#softBlur)"/>
-            <circle cx="280" cy="280" r="232" fill="url(#orbGlow)"/>
-            <g class="glass-body">
-              <circle cx="280" cy="280" r="218" fill="url(#glassFill)" stroke="url(#glassEdge)" stroke-width="5"/>
-              <circle cx="280" cy="280" r="210" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.4"/>
-              <g clip-path="url(#orbClip)">
-                <ellipse cx="170" cy="120" rx="150" ry="67" fill="#fff" opacity=".22" filter="url(#softBlur)"/>
-                <path class="wave-a" d="M43 255C117 185 174 187 247 232s104 76 170 58 83-58 147-27" fill="none" stroke="url(#currentLine)" stroke-width="23" opacity=".58"/>
-                <path class="wave-a" d="M39 258C113 188 170 190 243 235s104 76 170 58 83-58 147-27" fill="none" stroke="#fff" stroke-width="1.1" opacity=".8"/>
-                <path class="wave-b" d="M40 334c75-57 132-61 204-23s113 79 179 49 82-67 146-59" fill="none" stroke="url(#currentLine)" stroke-width="14" opacity=".48"/>
-                <path class="wave-b" d="M38 346c75-57 132-61 204-23s113 79 179 49 82-67 146-59" fill="none" stroke="#fff" stroke-width="1" opacity=".72"/>
-                <path d="M64 397c76-38 142-39 204-9s118 41 183 4 77-46 114-42" fill="none" stroke="#fff" stroke-opacity=".58" stroke-width="1.2"/>
-                <path d="M77 167c48-42 94-54 150-43" fill="none" stroke="#fff" stroke-opacity=".9" stroke-width="3" stroke-linecap="round"/>
-                <path d="M101 135c35-32 71-43 111-37" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="1.2" stroke-linecap="round"/>
-                <ellipse class="glint" cx="143" cy="129" rx="20" ry="6" fill="#fff" opacity=".65" transform="rotate(-31 143 129)"/>
-                <path d="M400 444c46-22 75-49 91-81" fill="none" stroke="#fff" stroke-opacity=".55" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="408" cy="145" r="45" fill="#fff" opacity=".11" filter="url(#softBlur)"/>
-              </g>
-              <circle cx="280" cy="280" r="218" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
-              <path d="M145 91c36-27 77-40 116-41" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".82"/>
-              <path d="M424 419c-26 31-57 52-94 63" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".5"/>
-            </g>
-          </svg>
-          <div class="orb-label" id="hero-orb-label"><strong id="hero-phase">Ready when you are</strong><span id="hero-phase-count">Three gentle cycles</span></div>
+      <div class="hero-art guide" id="hero-art" data-live="false">
+        <div class="orb" role="img" aria-label="A translucent glass orb that expands and contracts with the breathing guide">
+          <i class="ring ring-in"></i><i class="ring ring-out"></i>
+          <div class="orb-body"><svg viewBox="0 0 560 560" aria-hidden="true"><use href="#orb-glass"/></svg></div>
         </div>
-        <span class="orb-caption" id="orb-caption">A simple place to begin</span>
+        <div class="readout"><strong id="hero-phase">Ready when you are</strong><span id="hero-phase-count">Three gentle cycles</span></div>
+        <svg class="trace" id="hero-trace" viewBox="0 0 400 72" aria-hidden="true"></svg>
+        <p class="orb-caption" id="orb-caption">A simple place to begin</p>
       </div>
     </section>
 
-    <section class="section category-section" id="categories" aria-labelledby="category-title">
+    <section class="section tinted" id="categories" aria-labelledby="category-title">
       <div class="wrap">
         <div class="section-head">
-          <div><p class="section-index">Browse by intention</p><h2 id="category-title">Browse breathing<br>exercises by intention.</h2></div>
+          <h2 id="category-title">Browse breathing exercises by intention.</h2>
           <p>Different patterns suit different moments. Start with a category, or browse every exercise below.</p>
         </div>
-        <div class="category-grid" id="category-grid">
-          <a class="category-tile" data-tone="mint" href="#library" data-filter-link="Settle">
-            <span class="tile-orb" aria-hidden="true"></span><div class="tile-top"><span class="tile-number">01 / SETTLE</span><span class="tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 13c2-6 5-8 8-8s6 2 8 8M6 16c2-4 4-5 6-5s4 1 6 5"/></svg></span></div><div class="tile-copy"><h3>Settle the pace</h3><p>Gentle patterns with an unhurried exhale.</p><span class="tile-count">5 exercises</span></div>
-          </a>
-          <a class="category-tile" data-tone="blue" href="#library" data-filter-link="Focus">
-            <span class="tile-orb" aria-hidden="true"></span><div class="tile-top"><span class="tile-number">02 / FOCUS</span><span class="tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 1v3M23 12h-3"/></svg></span></div><div class="tile-copy"><h3>Find a steady rhythm</h3><p>Structured counts for a clear point of attention.</p><span class="tile-count">4 exercises</span></div>
-          </a>
-          <a class="category-tile" data-tone="peach" href="#library" data-filter-link="Rest">
-            <span class="tile-orb" aria-hidden="true"></span><div class="tile-top"><span class="tile-number">03 / REST</span><span class="tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 15.5A8.5 8.5 0 0 1 8.5 4 8.5 8.5 0 1 0 20 15.5Z"/></svg></span></div><div class="tile-copy"><h3>Wind down</h3><p>Simple practices for a slower evening.</p><span class="tile-count">3 exercises</span></div>
-          </a>
-          <a class="category-tile" data-tone="rose" href="#library" data-filter-link="Awareness">
-            <span class="tile-orb" aria-hidden="true"></span><div class="tile-top"><span class="tile-number">04 / AWARENESS</span><span class="tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3c4 4 6 7 6 10a6 6 0 0 1-12 0c0-3 2-6 6-10Z"/><path d="M9 14c.5 1.5 1.5 2.3 3 2.5"/></svg></span></div><div class="tile-copy"><h3>Notice the breath</h3><p>Practices that ask you to observe, not perform.</p><span class="tile-count">4 exercises</span></div>
-          </a>
-          <a class="category-tile" data-tone="stone" href="#library" data-filter-link="Techniques">
-            <span class="tile-orb" aria-hidden="true"></span><div class="tile-top"><span class="tile-number">05 / TECHNIQUES</span><span class="tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 17c4-8 12-8 16 0M4 7c4 8 12 8 16 0"/><path d="M12 3v18"/></svg></span></div><div class="tile-copy"><h3>Explore techniques</h3><p>Traditional and practical ways to work with breath.</p><span class="tile-count">5 exercises</span></div>
-          </a>
-          <a class="category-tile" data-tone="gold" href="#library" data-filter-link="Energy">
-            <span class="tile-orb" aria-hidden="true"></span><div class="tile-top"><span class="tile-number">06 / ENERGY</span><span class="tile-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 13h7l-1 9 10-13h-7l0-7Z"/></svg></span></div><div class="tile-copy"><h3>Prepare to move</h3><p>Short, comfortable patterns to pair with a change of pace or gentle movement.</p><span class="tile-count">3 exercises</span></div>
-          </a>
+        <div class="intent-grid" id="category-grid">
+          <a class="intent" href="#library" data-filter-link="Settle"><svg class="intent-trace" viewBox="0 0 180 44" aria-hidden="true" data-shape="4i 6o"></svg><span class="name">Settle</span><h3>Settle the pace</h3><p>Gentle patterns with an unhurried exhale.</p><span class="count">5 exercises</span></a>
+          <a class="intent" href="#library" data-filter-link="Focus"><svg class="intent-trace" viewBox="0 0 180 44" aria-hidden="true" data-shape="4i 4h 4o 4h"></svg><span class="name">Focus</span><h3>Find a steady rhythm</h3><p>Structured counts for a clear point of attention.</p><span class="count">4 exercises</span></a>
+          <a class="intent" href="#library" data-filter-link="Rest"><svg class="intent-trace" viewBox="0 0 180 44" aria-hidden="true" data-shape="4i 7h 8o"></svg><span class="name">Rest</span><h3>Wind down</h3><p>Simple practices for a slower evening.</p><span class="count">3 exercises</span></a>
+          <a class="intent" href="#library" data-filter-link="Awareness"><svg class="intent-trace" viewBox="0 0 180 44" aria-hidden="true" data-shape="rest"></svg><span class="name">Awareness</span><h3>Notice the breath</h3><p>Practices that ask you to observe, not perform.</p><span class="count">4 exercises</span></a>
+          <a class="intent" href="#library" data-filter-link="Techniques"><svg class="intent-trace" viewBox="0 0 180 44" aria-hidden="true" data-shape="2i 1i 5o"></svg><span class="name">Techniques</span><h3>Explore techniques</h3><p>Traditional and practical ways to work with breath.</p><span class="count">5 exercises</span></a>
+          <a class="intent" href="#library" data-filter-link="Energy"><svg class="intent-trace" viewBox="0 0 180 44" aria-hidden="true" data-shape="3i 3o 3i 3o"></svg><span class="name">Energy</span><h3>Prepare to move</h3><p>Short, comfortable patterns to pair with a change of pace or gentle movement.</p><span class="count">3 exercises</span></a>
         </div>
       </div>
     </section>
 
-    <section class="section library-section" id="library" aria-labelledby="library-title">
+    <section class="section" id="library" aria-labelledby="library-title">
       <div class="wrap">
-        <div class="library-topline"><div><p class="section-index">The exercise library</p><h2 id="library-title">All breathing exercises.</h2></div><p>Use the search or filters to find a pattern. Choose a comfortable pace rather than trying to match a number.</p></div>
+        <div class="section-head">
+          <h2 id="library-title">All breathing exercises.</h2>
+          <p>Use the search or filters to find a pattern. Choose a comfortable pace rather than trying to match a number.</p>
+        </div>
         <div class="library-shell">
-          <aside class="filter-rail" aria-label="Filter exercises by category"><h3>Browse categories</h3><div class="filter-list" id="filter-list">
-            <button class="filter-button" type="button" data-view="All" aria-pressed="true"><span>All exercises</span><span class="filter-count" id="count-all">24</span></button>
-            <button class="filter-button" type="button" data-view="Favorites" aria-pressed="false"><span>Favourites</span><span class="filter-count" id="count-favorites">0</span></button>
-            <button class="filter-button" type="button" data-view="Recent" aria-pressed="false"><span>Recently practised</span><span class="filter-count" id="count-recent">0</span></button>
-            <span class="filter-divider" aria-hidden="true"></span>
-            <button class="filter-button" type="button" data-filter="All" aria-pressed="true"><span>All exercises</span><span class="filter-count">24</span></button>
-            <button class="filter-button" type="button" data-filter="Settle" aria-pressed="false"><span>Settle</span><span class="filter-count">5</span></button>
-            <button class="filter-button" type="button" data-filter="Focus" aria-pressed="false"><span>Focus</span><span class="filter-count">4</span></button>
-            <button class="filter-button" type="button" data-filter="Rest" aria-pressed="false"><span>Rest</span><span class="filter-count">3</span></button>
-            <button class="filter-button" type="button" data-filter="Awareness" aria-pressed="false"><span>Awareness</span><span class="filter-count">4</span></button>
-            <button class="filter-button" type="button" data-filter="Techniques" aria-pressed="false"><span>Techniques</span><span class="filter-count">5</span></button>
-            <button class="filter-button" type="button" data-filter="Energy" aria-pressed="false"><span>Energy</span><span class="filter-count">3</span></button>
-          </div></aside>
+          <aside class="filter-rail" aria-label="Filter exercises"><h3>Browse</h3><div class="filter-list" id="filter-list"></div></aside>
           <div class="library-results">
-            <div class="search-row"><label class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="exercise-search" type="search" placeholder="Search breathing exercises" autocomplete="off" aria-label="Search breathing exercises"></label><span class="result-count" id="result-count" aria-live="polite">24 practices</span></div>
-            <div class="data-tools" aria-label="Personal data backup">
-              <span class="data-tools-note">Your favourites and history are saved on this device.</span>
-              <div class="data-tool-actions">
-                <button class="data-tool-button" id="export-data" type="button">Export backup</button>
-                <button class="data-tool-button" id="import-data" type="button">Restore backup</button>
+            <div class="search-row">
+              <label class="search-box"><svg class="icon" aria-hidden="true"><use href="#i-search"/></svg><input id="exercise-search" name="search" type="search" placeholder="Search breathing exercises…" autocomplete="off" spellcheck="false" aria-label="Search breathing exercises"></label>
+              <span class="result-count" id="result-count" aria-live="polite">24 practices</span>
+            </div>
+            <div class="exercise-list" id="exercise-list"></div>
+            <div class="empty-state" id="empty-state" hidden></div>
+            <noscript><p class="empty-state">The exercise library needs JavaScript. Breathe has no tracking and loads nothing from other sites.</p></noscript>
+            <div class="data-tools" role="group" aria-label="Personal data backup">
+              <span>Your favourites and history are saved on this device.</span>
+              <div>
+                <button class="btn-quiet" id="export-data" type="button">Export backup</button>
+                <button class="btn-quiet" id="import-data" type="button">Restore backup</button>
                 <input id="import-file" type="file" accept="application/json,.json" hidden>
               </div>
             </div>
             <p class="sr-only" id="backup-status" role="status" aria-live="polite"></p>
-            <div class="exercise-list" id="exercise-list"></div>
-            <div class="empty-state" id="empty-state"><strong>No matching exercise.</strong><br>Try another search or category.</div>
+            <p class="sr-only" id="storage-status" role="status" aria-live="polite"></p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="practice-note" id="practice-note">
+    <section class="tinted" id="practice-note">
       <div class="wrap note-layout"><h2>Keep each breath comfortable.</h2><div class="note-copy"><p>Breathing patterns are guides, not targets. Let the breath stay gentle, and skip any hold that feels uncomfortable. You can pause or stop at any time.</p><p>Practise somewhere safe; do not use timed breathing or breath holds while driving or in water. If you feel dizzy, strained or light-headed, return to normal breathing. Some techniques may not suit everyone. This is general practice guidance, not medical advice.</p></div></div>
     </section>
-    <section class="help-section wrap" id="help" aria-labelledby="help-title">
-      <div class="help-heading"><p class="section-kicker">A little guidance</p><h2 id="help-title">A calmer way to begin.</h2><p>Breathe is a simple, private space for guided breathing. There is nothing to achieve and no need to finish a session.</p></div>
+
+    <section class="wrap help-section" id="help" aria-labelledby="help-title">
+      <div class="help-heading"><h2 id="help-title">A calmer way to begin.</h2><p>Breathe is a simple, private space for guided breathing. There is nothing to achieve and no need to finish a session.</p></div>
       <div class="help-list">
         <details><summary>How do I use a breathing exercise?</summary><p>Choose an exercise, read its pattern and guidance, then select a comfortable session length. Start when you are ready. Follow the orb and phase words gently; never force your breath to match a count.</p></details>
         <details><summary>Can I skip the introduction?</summary><p>Yes. You can scroll to the exercise library at any time. The introductory three-cycle guide is optional.</p></details>
@@ -643,446 +184,67 @@
       </div>
     </section>
   </main>
-  <footer class="closing"><div class="wrap"><div class="closing-inner"><div><h2>Take your time.</h2><p>Return to the exercises whenever a short breathing practice would be useful.</p></div><nav class="closing-links" aria-label="Footer navigation"><a href="#top">Back to top</a><a href="#categories">Browse categories</a><a href="#library">All exercises</a><a href="#help">Help & privacy</a><button class="footer-install" id="install-app" type="button" hidden>Install Breathe</button></nav></div><div class="legal-line"><span>Breathe</span><span>Designed for a slower moment.</span></div></div></footer>
 
-  <div class="practice-screen" id="practice-screen" role="dialog" aria-modal="true" aria-labelledby="practice-title" aria-describedby="practice-description" aria-hidden="true" tabindex="-1">
-    <div class="practice-top"><button class="back-button" id="close-practice" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m7 7-7-7 7-7"/></svg>Back to exercises</button><div class="practice-top-right"><button class="icon-button" id="practice-theme-toggle" type="button" aria-label="Switch theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/></svg></button></div></div>
-    <div class="practice-content">
-      <div class="practice-details">
-        <p class="practice-category" id="practice-category">Settle · Guided pattern</p>
-        <h2 id="practice-title">Longer exhale</h2>
-        <p id="practice-description">A gentle pattern that gives the exhale a little more time.</p>
-        <div class="practice-meta" id="practice-meta"><span class="meta-chip">Beginner</span><span class="meta-chip">4 in · 6 out</span></div>
-        <div class="pattern-detail"><strong>THE PATTERN</strong><div class="pattern-flow" id="pattern-flow"></div></div>
-        <div class="practice-use"><strong>GOOD FOR</strong><p id="practice-use">A gentle moment to pause and notice your breathing.</p></div>
-        <p class="practice-caution" id="practice-caution">Keep the counts comfortable. Return to normal breathing if you feel strained or light-headed.</p>
-        <div class="intention-field"><label for="session-intention">SET AN INTENTION</label><select class="intention-select" id="session-intention"><option value="settle">Settle — make space to slow down</option><option value="focus">Focus — return to one thing</option><option value="unwind">Unwind — let the day soften</option><option value="observe">Observe — notice without changing</option></select><p class="intention-hint" id="intention-hint" aria-live="polite">Let this be a gentle pause, with nothing to achieve.</p></div>
-        <div class="practice-action-row" id="practice-start-row"><button class="primary-button" id="start-practice" type="button"><span>Start practice</span><span class="button-arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button><label class="duration-select-label"><span class="sr-only">Session length</span><select class="duration-select" id="session-duration"><option value="1">1 minute</option><option value="3" selected>3 minutes</option><option value="5">5 minutes</option></select></label></div>
-        <div class="practice-options" id="practice-options"><label class="hold-skip-option"><input type="checkbox" id="skip-holds"> <span>Skip timed holds</span></label><p class="hold-skip-note">Removes timed pauses from this practice. You can still breathe naturally between phases.</p></div>
+  <footer class="closing"><div class="wrap">
+    <div class="closing-inner">
+      <div><h2>Take your time.</h2><p>Return to the exercises whenever a short breathing practice would be useful.</p></div>
+      <nav class="closing-links" aria-label="Footer navigation"><a href="#top">Back to top</a><a href="#categories">Browse categories</a><a href="#library">All exercises</a><a href="#help">Help &amp; privacy</a><button class="btn-quiet" id="install-app" type="button" hidden>Install Breathe</button></nav>
+    </div>
+    <div class="legal-line"><span translate="no">Breathe</span><span>Designed for a slower moment.</span></div>
+  </div></footer>
 
+  <dialog class="practice" id="practice-screen" aria-labelledby="practice-title" aria-describedby="practice-description">
+    <div class="practice-top">
+      <button class="back-btn" id="close-practice" type="button"><svg class="icon" aria-hidden="true"><use href="#i-back"/></svg>Back to exercises</button>
+      <button class="icon-btn" id="practice-theme-toggle" type="button" aria-label="Switch theme"></button>
+    </div>
+    <div class="practice-grid">
+      <div class="practice-head">
+        <p class="practice-category" id="practice-category"></p>
+        <h2 id="practice-title"></h2>
+        <p id="practice-description"></p>
+        <div class="meta-chips" id="practice-meta"></div>
       </div>
-      <div class="practice-stage" id="practice-stage" data-phase="rest">
-        <div class="session-topline"><span id="session-mode">Ready to begin</span><span id="session-clock">3:00</span></div>
-        <div class="practice-orb-wrap">
-          <svg class="orb-svg" viewBox="0 0 560 560" role="img" aria-label="Glass orb breathing guide">
-            <defs>
-              <radialGradient id="pGlassFill" cx="31%" cy="24%" r="78%"><stop offset="0" stop-color="#fff" stop-opacity=".96"/><stop offset=".2" stop-color="#e9fff4" stop-opacity=".75"/><stop offset=".47" stop-color="#a6d8c9" stop-opacity=".34"/><stop offset=".76" stop-color="#72b9ae" stop-opacity=".27"/><stop offset="1" stop-color="#dff5e9" stop-opacity=".8"/></radialGradient>
-              <linearGradient id="pGlassEdge" x1=".12" y1=".08" x2=".89" y2=".91"><stop offset="0" stop-color="#fff" stop-opacity=".94"/><stop offset=".26" stop-color="#8bd1bd" stop-opacity=".64"/><stop offset=".56" stop-color="#fff" stop-opacity=".34"/><stop offset=".83" stop-color="#75b9bf" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity=".94"/></linearGradient>
-              <linearGradient id="pCurrentLine" x1=".08" y1=".2" x2=".96" y2=".78"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".23" stop-color="#fff" stop-opacity=".9"/><stop offset=".58" stop-color="#8fd5c3" stop-opacity=".9"/><stop offset=".84" stop-color="#fff" stop-opacity=".88"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-              <clipPath id="pOrbClip"><circle cx="280" cy="280" r="218"/></clipPath>
-              <filter id="pSoftBlur"><feGaussianBlur stdDeviation="12"/></filter>
-            </defs>
-            <ellipse cx="280" cy="493" rx="157" ry="24" fill="#5b9b88" opacity=".16" filter="url(#pSoftBlur)"/>
-            <g class="glass-body"><circle cx="280" cy="280" r="218" fill="url(#pGlassFill)" stroke="url(#pGlassEdge)" stroke-width="5"/><circle cx="280" cy="280" r="210" fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.4"/><g clip-path="url(#pOrbClip)"><path d="M43 255C117 185 174 187 247 232s104 76 170 58 83-58 147-27" fill="none" stroke="url(#pCurrentLine)" stroke-width="23" opacity=".58"/><path d="M39 258C113 188 170 190 243 235s104 76 170 58 83-58 147-27" fill="none" stroke="#fff" stroke-width="1.1" opacity=".8"/><path d="M40 334c75-57 132-61 204-23s113 79 179 49 82-67 146-59" fill="none" stroke="url(#pCurrentLine)" stroke-width="14" opacity=".48"/><path d="M38 346c75-57 132-61 204-23s113 79 179 49 82-67 146-59" fill="none" stroke="#fff" stroke-width="1" opacity=".72"/><path d="M64 397c76-38 142-39 204-9s118 41 183 4 77-46 114-42" fill="none" stroke="#fff" stroke-opacity=".58" stroke-width="1.2"/><path d="M145 91c36-27 77-40 116-41" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".82"/></g><circle cx="280" cy="280" r="218" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2"/></g>
-          </svg>
-          <div class="orb-label"><strong id="practice-phase" aria-live="polite" aria-atomic="true">Ready when you are</strong><span id="practice-phase-count">Choose a duration, then start</span></div>
+      <div class="practice-body">
+        <div class="block"><h3>The pattern</h3><div class="pattern-flow" id="pattern-flow"></div></div>
+        <div class="block"><h3>Good for</h3><p id="practice-use"></p></div>
+        <div class="block"><p class="caution" id="practice-caution"></p></div>
+        <div class="block">
+          <div class="field"><label for="session-intention">Set an intention</label>
+            <select class="select" id="session-intention"><option value="settle">Settle — make space to slow down</option><option value="focus">Focus — return to one thing</option><option value="unwind">Unwind — let the day soften</option><option value="observe">Observe — notice without changing</option></select>
+            <p class="hint" id="intention-hint" aria-live="polite"></p></div>
+          <div class="options" id="practice-options">
+            <label class="check" id="skip-holds-wrap"><input type="checkbox" id="skip-holds"><span>Skip timed holds</span></label>
+            <button class="btn-quiet sound-toggle" type="button" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-sound"/></svg><span>Audio cues off</span></button>
+            <button class="btn-quiet voice-toggle" type="button" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-voice"/></svg><span>Voice guidance off</span></button>
+            <p class="note" id="hold-note">Skipping removes timed pauses from this practice. You can still breathe naturally between phases.</p>
+          </div>
         </div>
-        <div class="session-message" id="session-message">Let the breath stay easy.</div>
-        <div class="session-controls"><button class="icon-button" id="session-restart" type="button" aria-label="Restart session"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg></button><button class="icon-button main-control" id="session-pause" type="button" aria-label="Pause session"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg></button><button class="icon-button" id="session-fullscreen" type="button" aria-label="Toggle fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg></button><button class="text-button sound-toggle" type="button" aria-pressed="false" aria-label="Turn audio cues on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7m3-10a9 9 0 0 1 0 13"/></svg><span>Audio cues off</span></button>
-          <button class="text-button voice-toggle" type="button" aria-pressed="false" aria-label="Turn voice guidance on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 18V5m0 0-4 4m4-4 4 4"/><path d="M5 14v1a7 7 0 0 0 14 0v-1"/></svg><span>Voice guidance off</span></button></div>
-        <div class="practice-done" id="practice-done" aria-live="polite"><h3>Practice complete.</h3><p>Return to the exercise library whenever you are ready.</p><button class="primary-button" id="done-close" type="button"><span>Return to exercises</span><span class="button-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span></button></div>
+      </div>
+      <div class="stage guide" id="practice-stage" data-state="ready" data-live="false">
+        <div class="session-top"><span id="session-mode">Ready to begin</span><span id="session-clock">3:00</span></div>
+        <div class="guide">
+          <div class="orb" role="img" aria-label="Glass orb breathing guide">
+            <i class="ring ring-in"></i><i class="ring ring-out"></i>
+            <div class="orb-body"><svg viewBox="0 0 560 560" aria-hidden="true"><use href="#orb-glass"/></svg></div>
+          </div>
+          <div class="readout"><strong id="practice-phase" aria-live="polite" aria-atomic="true">Ready when you are</strong><span id="practice-phase-count">Choose a duration, then start</span></div>
+          <svg class="trace" id="practice-trace" viewBox="0 0 400 72" aria-hidden="true"></svg>
+        </div>
+        <div class="stage-bottom">
+          <div class="stage-ready">
+            <label><span class="sr-only">Session length</span><select class="duration" id="session-duration"><option value="1">1 minute</option><option value="3" selected>3 minutes</option><option value="5">5 minutes</option></select></label>
+            <button class="btn" id="start-practice" type="button" autofocus>Start practice</button>
+          </div>
+          <div class="stage-active">
+            <button class="icon-btn" id="session-restart" type="button" aria-label="Restart session"><svg class="icon"><use href="#i-restart"/></svg></button>
+            <button class="icon-btn main" id="session-pause" type="button" aria-label="Pause session"></button>
+            <button class="icon-btn" id="session-fullscreen" type="button" aria-label="Toggle fullscreen"><svg class="icon"><use href="#i-full"/></svg></button>
+          </div>
+        </div>
+        <div class="done" id="practice-done" aria-live="polite"><h3>Practice complete.</h3><p>Return to the exercise library whenever you are ready.</p><div class="row-btns"><button class="btn" id="done-close" type="button">Return to exercises</button><button class="btn-quiet" id="done-again" type="button">Practise again</button></div></div>
       </div>
     </div>
-  </div>
-
-  <style>.sr-only { position:absolute!important; width:1px!important; height:1px!important; padding:0!important; margin:-1px!important; overflow:hidden!important; clip:rect(0,0,0,0)!important; white-space:nowrap!important; border:0!important; } .duration-select-label { display:inline-flex; }</style>
-  <script>
-    const exercises = [
-      {id:'extended-exhale', name:'Longer exhale', category:'Settle', description:'A gentle pattern that gives the exhale a little more time.', bestFor:"A gentle pause when you want to slow down and notice the out-breath", level:'Beginner', pattern:'4 in · 6 out', phases:[['Breathe in',4,'inhale'],['Breathe out',6,'exhale']], caution:'Keep the counts comfortable. Shorten the pattern or return to normal breathing if you feel strained.', minutes:'2–5 min'},
-      {id:'equal-breathing', name:'Equal breathing', category:'Settle', description:'Give the inhale and exhale the same amount of time.', bestFor:"A simple, balanced rhythm for a short mindful break", level:'Beginner', pattern:'4 in · 4 out', phases:[['Breathe in',4,'inhale'],['Breathe out',4,'exhale']], caution:'Use a natural, comfortable breath. The counts are only a suggestion.', minutes:'2–5 min'},
-      {id:'coherent-breathing', name:'Slow even breathing', category:'Settle', description:'A steady, even rhythm with a little more time for each breath.', bestFor:"Practising an even pace without adding breath holds", level:'Beginner', pattern:'5 in · 5 out', phases:[['Breathe in',5,'inhale'],['Breathe out',5,'exhale']], caution:'Slow down only as far as feels easy. Do not take unusually deep breaths.', minutes:'2–5 min'},
-      {id:'humming-exhale', name:'Humming exhale', category:'Settle', description:'Let a soft hum accompany the exhale, without pushing the sound.', bestFor:"Pairing a quiet hum with an easy exhale", level:'Beginner', pattern:'4 in · 6 hum out', phases:[['Breathe in',4,'inhale'],['Hum softly as you breathe out',6,'exhale']], caution:'Keep the hum quiet and comfortable. Stop if you feel pressure or strain.', minutes:'1–3 min'},
-      {id:'gentle-reset', name:'Gentle reset', category:'Settle', description:'A short, simple rhythm for taking a brief pause.', bestFor:"A brief reset with an optional pause between breaths", level:'Beginner', pattern:'3 in · 2 pause · 5 out', phases:[['Breathe in',3,'inhale'],['Pause gently',2,'hold'],['Breathe out',5,'exhale']], caution:'The pause is optional. Skip it if holding your breath is uncomfortable.', minutes:'1–3 min'},
-      {id:'box-breathing', name:'Box breathing', category:'Focus', description:'Four equal parts create a clear, repeatable pattern.', bestFor:"A structured rhythm for focused attention; holds can be skipped", level:'Intermediate', pattern:'4 · 4 · 4 · 4', phases:[['Breathe in',4,'inhale'],['Hold gently',4,'hold'],['Breathe out',4,'exhale'],['Pause gently',4,'hold']], caution:'Breath holds are optional. Shorten or skip them, and never force the count.', minutes:'2–5 min'},
-      {id:'three-three-six', name:'3–3–6 breathing', category:'Focus', description:'A measured inhale, a brief pause and a longer exhale.', bestFor:"A measured pattern with a short, optional pause", level:'Beginner', pattern:'3 in · 3 pause · 6 out', phases:[['Breathe in',3,'inhale'],['Pause gently',3,'hold'],['Breathe out',6,'exhale']], caution:'Skip the pause if it does not feel comfortable.', minutes:'2–4 min'},
-      {id:'counted-breathing', name:'Counted breathing', category:'Focus', description:'Count each breath to give your attention one simple task.', bestFor:"Giving the mind a simple count to return to", level:'Beginner', pattern:'Count 1 to 5', phases:[['Notice the inhale',4,'inhale'],['Notice the exhale',4,'exhale']], caution:'Let your breath find its own comfortable rhythm. The count is a focus aid, not a target.', minutes:'2–5 min'},
-      {id:'alternate-count', name:'Alternate count', category:'Focus', description:'Count each exhale from one to five, then begin again.', bestFor:"A light attention exercise when the mind wanders", level:'Beginner', pattern:'Count each exhale', phases:[['Breathe in',4,'inhale'],['Breathe out and count',4,'exhale']], caution:'If you lose count, simply begin again. There is nothing to complete perfectly.', minutes:'2–5 min'},
-      {id:'four-seven-eight', name:'4–7–8 breathing', category:'Rest', description:'A structured pattern with a longer exhale and a longer pause.', bestFor:"Exploring a structured pattern only if longer pauses feel easy", level:'Intermediate', pattern:'4 in · 7 hold · 8 out', phases:[['Breathe in',4,'inhale'],['Hold gently',7,'hold'],['Breathe out slowly',8,'exhale']], caution:'This pattern includes a long hold. Skip the hold or choose another exercise if it feels uncomfortable. Stop if dizzy.', minutes:'1–3 min'},
-      {id:'restful-exhale', name:'Restful exhale', category:'Rest', description:'A low-count pattern with an easy, unhurried exhale.', bestFor:"A soft rhythm with a slightly longer out-breath", level:'Beginner', pattern:'3 in · 5 out', phases:[['Breathe in',3,'inhale'],['Breathe out',5,'exhale']], caution:'Keep the breath soft. You do not need to empty your lungs completely.', minutes:'2–5 min'},
-      {id:'evening-breath', name:'Evening breathing', category:'Rest', description:'A gentle, even rhythm to use as part of an evening wind-down.', bestFor:"A quiet, unhurried moment as part of an evening routine", level:'Beginner', pattern:'4 in · 5 out', phases:[['Breathe in',4,'inhale'],['Breathe out',5,'exhale']], caution:'Use this only if it feels pleasant. Return to natural breathing whenever you like.', minutes:'2–5 min'},
-      {id:'natural-observation', name:'Natural breath observation', category:'Awareness', description:'Notice the breath as it is, without changing its pace.', bestFor:"Noticing the breath without changing or controlling it", level:'Beginner', pattern:'No set count', phases:null, guided:false, caution:'There is no need to make the breath deeper or slower. Simply notice what is already happening.', minutes:'1–5 min'},
-      {id:'belly-breathing', name:'Diaphragmatic breathing', category:'Awareness', description:'Notice the movement around your belly while breathing gently.', bestFor:"Noticing gentle movement around the abdomen", level:'Beginner', pattern:'Comfortable natural breath', phases:[['Breathe in gently',4,'inhale'],['Breathe out gently',5,'exhale']], caution:'Keep the shoulders relaxed and avoid taking very deep breaths. Stop if uncomfortable.', minutes:'2–5 min'},
-      {id:'three-part-breath', name:'Three-part breathing', category:'Awareness', description:'Notice the belly, ribs and upper chest as the inhale moves.', bestFor:"Exploring sensations in the belly, ribs and upper chest", level:'Beginner', pattern:'Belly · ribs · chest', phases:[['Notice the belly',2,'inhale'],['Notice the ribs',2,'inhale'],['Notice the upper chest',2,'inhale'],['Release the breath',5,'exhale']], caution:'This is a gentle awareness exercise, not a test of how much air you can take in.', minutes:'2–4 min'},
-      {id:'body-scan-breath', name:'Breath and body scan', category:'Awareness', description:'Notice where the breath is easiest to feel, then soften your attention.', bestFor:"Noticing where breathing is easiest to feel in the body", level:'Beginner', pattern:'Observe · soften · repeat', phases:null, guided:false, caution:'Keep your breathing natural. You can open your eyes or stop at any time.', minutes:'3–5 min'},
-      {id:'morning-rhythm', name:'Morning rhythm', category:'Energy', description:'A short, even rhythm to begin a morning routine.', bestFor:"A brief, simple moment to begin the day", level:'Beginner', pattern:'3 in · 3 out', phases:[['Breathe in',3,'inhale'],['Breathe out',3,'exhale']], caution:'Keep the breath comfortable and natural. This is not a performance or a test.', minutes:'1–3 min'},
-      {id:'upright-reset', name:'Upright reset', category:'Energy', description:'A brief breathing pause to pair with a change of posture.', bestFor:"Pairing a comfortable posture change with natural breathing", level:'Beginner', pattern:'4 in · 4 out', phases:[['Breathe in gently',4,'inhale'],['Breathe out gently',4,'exhale']], caution:'Move into a comfortable position first. Stop if you feel dizzy or strained.', minutes:'1–3 min'},
-      {id:'movement-breath', name:'Movement and breath', category:'Energy', description:'Coordinate natural breathing with small, comfortable movements.', bestFor:"Coordinating easy movement with your natural breath", level:'Beginner', pattern:'Natural rhythm', phases:null, guided:false, caution:'Keep movements small and breathing natural. Avoid breath holds or forced deep breaths.', minutes:'1–3 min'},
-      {id:'physiological-sigh', name:'Physiological sigh', category:'Techniques', description:'Two gentle inhales followed by one longer, relaxed exhale.', bestFor:"Trying a gentle double-inhale and relaxed exhale without forcing depth", level:'Beginner', pattern:'Inhale · small top-up · exhale', phases:[['Breathe in gently',2,'inhale'],['Take a small top-up breath',1,'inhale'],['Let the breath out slowly',5,'exhale']], caution:'Keep both inhales small and comfortable. Do not repeat rapidly or force a deep breath. Stop if dizzy.', minutes:'1–2 min'},
-      {id:'pursed-lip', name:'Pursed-lip breathing', category:'Techniques', description:'Breathe in gently, then breathe out through softly pursed lips.', bestFor:"Practising a soft, unforced exhale through lightly pursed lips", level:'Beginner', pattern:'2 in · 4 out', phases:[['Breathe in through the nose',2,'inhale'],['Breathe out through pursed lips',4,'exhale']], caution:'Do not force the exhale or use this as a substitute for medical guidance when you are breathless.', minutes:'1–3 min'},
-      {id:'alternate-nostril', name:'Alternate nostril breathing', category:'Techniques', description:'A traditional pattern that alternates the nostril used for each breath.', bestFor:"A traditional alternating-nostril attention practice", level:'Intermediate', pattern:'Left in · right out · switch', phases:[['Breathe in through the left nostril',4,'inhale'],['Breathe out through the right nostril',4,'exhale'],['Breathe in through the right nostril',4,'inhale'],['Breathe out through the left nostril',4,'exhale']], caution:'Use a light touch and do not block the nose forcefully. Skip this if congested or uncomfortable.', minutes:'2–5 min'},
-      {id:'cooling-breath', name:'Cooling breath', category:'Techniques', description:'A traditional breathing technique using a gentle, open-mouth or curled-tongue inhale.', bestFor:"Exploring a traditional cooling-style breath at an easy pace", level:'Intermediate', pattern:'Gentle inhale · easy exhale', phases:[['Breathe in gently',4,'inhale'],['Breathe out gently',5,'exhale']], caution:'Keep the breath easy and stop if you feel cold, dizzy or uncomfortable. This technique is not suitable for everyone.', minutes:'1–3 min'},
-      {id:'soft-wave', name:'Soft wave breathing', category:'Techniques', description:'A simple inhale and exhale with no pause between them.', bestFor:"Keeping the transitions between inhale and exhale smooth", level:'Beginner', pattern:'4 in · 4 out', phases:[['Breathe in',4,'inhale'],['Breathe out',4,'exhale']], caution:'Let the transitions stay smooth. No need to hold the breath between phases.', minutes:'2–4 min'}
-    ];
-
-    const $ = (id) => document.getElementById(id);
-    let currentFilter = 'All';
-    let currentView = 'All';
-    const STORAGE_KEYS = { favorites:'breathe:v1:favorites', recent:'breathe:v1:recent' };
-    function readStored(key, fallback) { try { const value=JSON.parse(localStorage.getItem(key)); return value ?? fallback; } catch (_) { return fallback; } }
-    let favoriteIds = new Set(Array.isArray(readStored(STORAGE_KEYS.favorites,[])) ? readStored(STORAGE_KEYS.favorites,[]) : []);
-    let recentPractices = Array.isArray(readStored(STORAGE_KEYS.recent,[])) ? readStored(STORAGE_KEYS.recent,[]) : [];
-    function saveFavorites() { try { localStorage.setItem(STORAGE_KEYS.favorites,JSON.stringify([...favoriteIds])); } catch (_) { announceStorageIssue(); } }
-    function saveRecent() { try { localStorage.setItem(STORAGE_KEYS.recent,JSON.stringify(recentPractices.slice(0,20))); } catch (_) { announceStorageIssue(); } }
-    function announceStorageIssue() { const status=$('storage-status'); if(status) status.textContent='Your browser could not save this change. Check available site storage.'; }
-    function recordRecent(id) { recentPractices=[{id,at:Date.now()},...recentPractices.filter(item=>item.id!==id)].slice(0,20); saveRecent(); updatePersonalCounts(); }
-    const INTENTIONS = {settle:{label:'Settle',hint:'Let this be a gentle pause, with nothing to achieve.'},focus:{label:'Focus',hint:'Gently return your attention to the rhythm of this breath.'},unwind:{label:'Unwind',hint:'Allow your shoulders and jaw to soften, without forcing anything.'},observe:{label:'Observe',hint:'Notice each breath as it is, without needing to change it.'}};
-    let selectedIntention = 'settle';
-    try { const saved=localStorage.getItem('breathe-intention'); if(INTENTIONS[saved]) selectedIntention=saved; } catch(_) {}
-    function syncIntention() { const item=INTENTIONS[selectedIntention] || INTENTIONS.settle; $('intention-hint').textContent=item.hint; }
-    $('session-intention').value=selectedIntention;
-    $('session-intention').addEventListener('change',()=>{ selectedIntention=INTENTIONS[$('session-intention').value] ? $('session-intention').value : 'settle'; try { localStorage.setItem('breathe-intention',selectedIntention); } catch(_) {} syncIntention(); });
-    syncIntention();
-    let selectedExercise = null;
-    let practiceReturnFocus = null;
-    let introTimer = null;
-    let introStartedAt = 0, introElapsedBeforePause = 0, introPaused = false, introState = 'idle';
-    let practiceTimer = null;
-    let practiceStartedAt = 0, practiceElapsedBeforePause = 0, practicePaused = false, practiceState = 'ready';
-    let practiceDurationMs = 180000;
-    let audioCuesEnabled = false;
-    let audioContext = null;
-    let voiceGuidanceEnabled = false;
-    let introLastPhase = '';
-    let practiceLastPhase = ''; 
-    let practiceLastPhaseIndex = -1;
-    const introPhases = [['Breathe in',4,'inhale'],['Hold gently',2,'hold'],['Breathe out',6,'exhale']];
-
-    function patternBars(phases) {
-      if (!phases) return '<span class="exercise-pattern">Natural rhythm</span>';
-      const max = Math.max(...phases.map(p=>p[1]));
-      return '<span class="exercise-pattern" aria-label="'+phases.map(p=>p[0]+' '+p[1]+' seconds').join(', ')+'">'+phases.map(p=>'<i class="pattern-segment '+(p[2]==='hold'?'hold':'')+'" style="width:'+Math.max(10,Math.round(p[1]/max*25))+'px"></i>').join('')+'</span>';
-    }
-    function updatePersonalCounts() {
-      $('count-favorites').textContent=String(favoriteIds.size);
-      $('count-recent').textContent=String(recentPractices.length);
-    }
-    function renderExercises() {
-      const term = $('exercise-search').value.trim().toLowerCase();
-      let source = exercises;
-      if (currentView==='Favorites') source=exercises.filter(ex=>favoriteIds.has(ex.id));
-      if (currentView==='Recent') source=recentPractices.map(item=>exercises.find(ex=>ex.id===item.id)).filter(Boolean);
-      const filtered = source.filter(ex => (currentFilter === 'All' || ex.category === currentFilter) && (!term || (ex.name+' '+ex.description+' '+ex.bestFor+' '+ex.category+' '+ex.pattern+' '+ex.level).toLowerCase().includes(term)));
-      $('exercise-list').innerHTML = filtered.map((ex) => {
-        const idx = String(exercises.indexOf(ex)+1).padStart(2,'0');
-        const isFavorite=favoriteIds.has(ex.id);
-        return `<article class="exercise-row"><span class="exercise-index">${idx}</span><div><h3 class="exercise-name">${ex.name}</h3><p class="exercise-desc">${ex.description}</p><p class="exercise-use">Good for: ${ex.bestFor}</p></div>${patternBars(ex.phases)}<span class="exercise-tag">${ex.category}</span><button class="favorite-toggle" type="button" data-favorite="${ex.id}" aria-pressed="${isFavorite}" aria-label="${isFavorite?'Remove':'Add'} ${ex.name} ${isFavorite?'from':'to'} favourites" title="${isFavorite?'Remove from':'Add to'} favourites"><svg viewBox="0 0 24 24" fill="${isFavorite?'currentColor':'none'}" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.8 4.6a5.4 5.4 0 0 0-7.6 0L12 5.8l-1.2-1.2a5.4 5.4 0 0 0-7.6 7.6l1.2 1.2L12 21l7.6-7.6 1.2-1.2a5.4 5.4 0 0 0 0-7.6Z"/></svg></button><button class="row-action" type="button" data-open="${ex.id}" aria-label="Open ${ex.name}">View practice <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></button></article>`;
-      }).join('');
-      $('result-count').textContent = filtered.length + (filtered.length === 1 ? ' practice' : ' practices');
-      $('empty-state').classList.toggle('visible', filtered.length === 0);
-      $('empty-state').innerHTML = currentView==='Favorites' ? '<strong>No favourites yet.</strong><br>Save an exercise with the heart button and it will appear here.' : currentView==='Recent' ? '<strong>No recent practices yet.</strong><br>Start an exercise and it will appear here.' : '<strong>No matching exercise.</strong><br>Try another search or category.';
-      $('exercise-list').style.display = filtered.length ? 'block' : 'none';
-      document.querySelectorAll('.filter-button').forEach(btn => btn.setAttribute('aria-pressed', String(btn.dataset.filter ? btn.dataset.filter === currentFilter : btn.dataset.view===currentView)));
-      updatePersonalCounts();
-    }
-    function backupPayload() {
-      return { app:'Breathe', version:1, exportedAt:new Date().toISOString(), favorites:[...favoriteIds], recent:recentPractices.slice(0,20) };
-    }
-    function setBackupStatus(message) { $('backup-status').textContent=message; }
-    $('export-data').addEventListener('click',()=>{
-      const data=JSON.stringify(backupPayload(),null,2);
-      const blob=new Blob([data],{type:'application/json'});
-      const url=URL.createObjectURL(blob);
-      const link=document.createElement('a');
-      link.href=url; link.download='breathe-backup-'+new Date().toISOString().slice(0,10)+'.json';
-      document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url);
-      setBackupStatus('Backup downloaded. Keep the file somewhere safe.');
-    });
-    $('import-data').addEventListener('click',()=>$('import-file').click());
-    $('import-file').addEventListener('change',async()=>{
-      const file=$('import-file').files?.[0]; if(!file) return;
-      try {
-        if(file.size>200000) throw new Error('This backup file is too large.');
-        const parsed=JSON.parse(await file.text());
-        if(!parsed || parsed.app!=='Breathe' || parsed.version!==1 || !Array.isArray(parsed.favorites) || !Array.isArray(parsed.recent)) throw new Error('This is not a supported Breathe backup.');
-        const validIds=new Set(exercises.map(ex=>ex.id));
-        const nextFavorites=[...new Set(parsed.favorites.filter(id=>typeof id==='string' && validIds.has(id)))];
-        const seen=new Set();
-        const nextRecent=parsed.recent.filter(item=>item && typeof item.id==='string' && validIds.has(item.id) && Number.isFinite(item.at) && !seen.has(item.id) && seen.add(item.id)).slice(0,20).map(item=>({id:item.id,at:item.at}));
-        if(nextFavorites.length!==parsed.favorites.length || nextRecent.length===0 && parsed.recent.length>0 && !parsed.recent.every(item=>item && typeof item.id==='string' && validIds.has(item.id))) {
-          setBackupStatus('Some unknown or invalid entries were skipped while restoring.');
-        } else setBackupStatus('Backup restored successfully.');
-        favoriteIds=new Set(nextFavorites); recentPractices=nextRecent;
-        saveFavorites(); saveRecent(); renderExercises();
-      } catch(error) { setBackupStatus(error.message || 'Could not read this backup file.'); }
-      finally { $('import-file').value=''; }
-    });
-    $('exercise-search').addEventListener('input', renderExercises);
-    $('filter-list').addEventListener('click', (e) => {
-      const view=e.target.closest('[data-view]');
-      if(view){ currentView=view.dataset.view; currentFilter='All'; renderExercises(); return; }
-      const btn = e.target.closest('[data-filter]'); if (!btn) return; currentView='All'; currentFilter = btn.dataset.filter; renderExercises();
-    });
-    $('category-grid').addEventListener('click', (e) => { const a=e.target.closest('[data-filter-link]'); if (!a) return; currentFilter=a.dataset.filterLink; $('exercise-search').value=''; renderExercises(); });
-    $('exercise-list').addEventListener('click', (e) => {
-      const favorite=e.target.closest('[data-favorite]');
-      if(favorite){ const id=favorite.dataset.favorite; favoriteIds.has(id)?favoriteIds.delete(id):favoriteIds.add(id); saveFavorites(); renderExercises(); return; }
-      const btn=e.target.closest('[data-open]'); if (btn) { practiceReturnFocus=btn; openPractice(btn.dataset.open); }
-    });
-    $('count-all').textContent = exercises.length;
-    const statusNode=document.createElement('p'); statusNode.id='storage-status'; statusNode.className='sr-only'; statusNode.setAttribute('role','status'); document.querySelector('.library-results').appendChild(statusNode);
-
-    function syncThemeLabels() {
-      const isLight = document.documentElement.dataset.theme === 'light';
-      const action = isLight ? 'Switch to dark theme' : 'Switch to light theme';
-      const moon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z"/></svg>';
-      const sun = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg>';
-      $('theme-toggle').setAttribute('aria-label', action);
-      $('practice-theme-toggle').setAttribute('aria-label', action);
-      $('theme-toggle').innerHTML = isLight ? moon : sun;
-      $('practice-theme-toggle').innerHTML = isLight ? moon : sun;
-      document.querySelector('meta[name="theme-color"]').setAttribute('content', isLight ? '#f2f6f2' : '#101f1c');
-    }
-    function setTheme() {
-      const current = document.documentElement.dataset.theme || 'light';
-      const next = current === 'light' ? 'dark' : 'light';
-      document.documentElement.dataset.theme = next;
-      try { localStorage.setItem('breathe-theme', next); } catch(_) {}
-      syncThemeLabels();
-    }
-    try { const saved = localStorage.getItem('breathe-theme'); if (saved === 'dark' || saved === 'light') document.documentElement.dataset.theme = saved; } catch(_) {}
-    syncThemeLabels();
-    $('theme-toggle').addEventListener('click', setTheme);
-    $('practice-theme-toggle').addEventListener('click', setTheme);
-
-    function syncAudioButtons() {
-      document.querySelectorAll('.sound-toggle').forEach(button => {
-        button.setAttribute('aria-pressed', String(audioCuesEnabled));
-        button.setAttribute('aria-label', audioCuesEnabled ? 'Turn audio cues off' : 'Turn audio cues on');
-        const label=button.querySelector('span'); if(label) label.textContent=audioCuesEnabled ? 'Audio cues on' : 'Audio cues off';
-      });
-    }
-    function toggleAudioCues() {
-      audioCuesEnabled=!audioCuesEnabled;
-      try { localStorage.setItem('breathe-audio-cues', audioCuesEnabled ? 'on' : 'off'); } catch(_) {}
-      syncAudioButtons();
-      if(audioCuesEnabled) playPhaseCue('inhale');
-    }
-    function playPhaseCue(phase) {
-      if(!audioCuesEnabled) return;
-      try {
-        const AudioCtx=window.AudioContext || window.webkitAudioContext;
-        if(!AudioCtx) return;
-        if(!audioContext) audioContext=new AudioCtx();
-        if(audioContext.state==='suspended') audioContext.resume();
-        const now=audioContext.currentTime;
-        const frequencies={inhale:523.25,hold:659.25,exhale:392};
-        const oscillator=audioContext.createOscillator();
-        const gain=audioContext.createGain();
-        oscillator.type='sine'; oscillator.frequency.setValueAtTime(frequencies[phase] || 440,now);
-        gain.gain.setValueAtTime(0.0001,now);
-        gain.gain.exponentialRampToValueAtTime(0.055,now+0.025);
-        gain.gain.exponentialRampToValueAtTime(0.0001,now+0.22);
-        oscillator.connect(gain); gain.connect(audioContext.destination);
-        oscillator.start(now); oscillator.stop(now+0.24);
-      } catch(_) {}
-    }
-    try { audioCuesEnabled=localStorage.getItem('breathe-audio-cues')==='on'; } catch(_) {}
-    syncAudioButtons();
-    document.querySelectorAll('.sound-toggle').forEach(button=>button.addEventListener('click',toggleAudioCues));
-    function syncVoiceButtons() {
-      document.querySelectorAll('.voice-toggle').forEach(button => {
-        button.setAttribute('aria-pressed', String(voiceGuidanceEnabled));
-        button.setAttribute('aria-label', voiceGuidanceEnabled ? 'Turn voice guidance off' : 'Turn voice guidance on');
-        const label=button.querySelector('span'); if(label) label.textContent=voiceGuidanceEnabled ? 'Voice guidance on' : 'Voice guidance off';
-        const supported=Boolean(window.speechSynthesis && window.SpeechSynthesisUtterance);
-        button.disabled=!supported;
-        if(!supported) { button.setAttribute('aria-label','Voice guidance is not supported by this browser'); if(label) label.textContent='Voice unavailable'; }
-      });
-    }
-    function stopVoiceGuidance() {
-      if(window.speechSynthesis) window.speechSynthesis.cancel();
-    }
-    function toggleVoiceGuidance() {
-      if(!window.speechSynthesis || !window.SpeechSynthesisUtterance) return;
-      voiceGuidanceEnabled=!voiceGuidanceEnabled;
-      try { localStorage.setItem('breathe-voice-guidance', voiceGuidanceEnabled ? 'on' : 'off'); } catch(_) {}
-      if(!voiceGuidanceEnabled) stopVoiceGuidance();
-      syncVoiceButtons();
-      if(voiceGuidanceEnabled) speakPhase('Ready when you are');
-    }
-    function speakPhase(label) {
-      if(!voiceGuidanceEnabled || !window.speechSynthesis || !window.SpeechSynthesisUtterance || !label) return;
-      try {
-        window.speechSynthesis.cancel();
-        const utterance=new SpeechSynthesisUtterance(label);
-        utterance.lang='en-US'; utterance.rate=0.88; utterance.pitch=1; utterance.volume=0.8;
-        window.speechSynthesis.speak(utterance);
-      } catch(_) {}
-    }
-    try { voiceGuidanceEnabled=localStorage.getItem('breathe-voice-guidance')==='on'; } catch(_) {}
-    syncVoiceButtons();
-    document.querySelectorAll('.voice-toggle').forEach(button=>button.addEventListener('click',toggleVoiceGuidance));
-
-    function introElapsed() { return introElapsedBeforePause + (introPaused ? 0 : performance.now() - introStartedAt); }
-    function updateIntro() {
-      if (introState !== 'active') return;
-      const elapsed = Math.min(introElapsed(),36000);
-      const phasePosition = elapsed % 12000;
-      let cumulative = 0, active = introPhases[0];
-      for (const phase of introPhases) { if (phasePosition < cumulative + phase[1]*1000) { active = phase; break; } cumulative += phase[1]*1000; }
-      const phaseElapsed = phasePosition - cumulative;
-      const remaining = Math.max(1,Math.ceil((active[1]*1000-phaseElapsed)/1000));
-      const cycle = Math.min(3,Math.floor(elapsed/12000)+1);
-      $('hero-art').dataset.phase = active[2];
-      $('hero-art').style.setProperty('--phase-duration', Math.max(0.1,(active[1]-(phaseElapsed/1000)))+'s');
-      $('hero-phase').textContent = active[0];
-      $('hero-phase-count').textContent = remaining + (remaining === 1 ? ' second' : ' seconds');
-      $('intro-cycle').textContent = 'Cycle '+cycle+' of 3';
-      $('intro-remaining').textContent = Math.ceil((36000-elapsed)/1000)+' seconds';
-      $('intro-progress-value').style.width = (elapsed/36000*100)+'%';
-      if (active[2] !== introLastPhase) { introLastPhase=active[2]; $('hero-art').style.setProperty('--phase-duration',active[1]+'s'); playPhaseCue(active[2]); speakPhase(active[0]); }
-      if (elapsed >= 36000) finishIntro();
-    }
-    function beginIntro() {
-      clearInterval(introTimer); introState='active'; introPaused=false; introElapsedBeforePause=0; introStartedAt=performance.now(); introLastPhase='';
-      $('intro').classList.add('is-active'); $('intro').classList.remove('is-complete');
-      $('hero-title').innerHTML='Follow the shape <span class="soft">of each breath.</span>';
-      $('hero-kicker').textContent='Your first three cycles';
-      $('hero-lede').textContent='Breathe in, pause gently, then let the breath out. Keep the pace comfortable.';
-      $('begin-intro').style.display='none'; $('hero-facts').style.display='none'; $('pause-intro').style.display='inline-flex'; $('restart-intro').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg><span>Start again</span>'; $('intro-controls').classList.add('visible'); $('intro-progress').classList.add('visible'); $('hero-explore').style.marginTop='26px'; $('orb-caption').textContent='Let the breath stay easy';
-      $('pause-intro').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg><span>Pause</span>';
-      updateIntro(); introTimer=setInterval(updateIntro,100);
-    }
-    function pauseIntro() {
-      if (introState !== 'active') return;
-      if (!introPaused) { stopVoiceGuidance(); introElapsedBeforePause += performance.now()-introStartedAt; introPaused=true; clearInterval(introTimer); $('pause-intro').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 12 7-12 7z"/></svg><span>Resume</span>'; $('hero-phase-count').textContent='Paused'; }
-      else { introPaused=false; introStartedAt=performance.now(); $('pause-intro').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg><span>Pause</span>'; introTimer=setInterval(updateIntro,100); updateIntro(); }
-    }
-    function finishIntro() {
-      stopVoiceGuidance(); clearInterval(introTimer); introState='complete'; introPaused=false;
-      $('intro').classList.remove('is-active'); $('intro').classList.add('is-complete'); $('hero-art').dataset.phase='rest';
-      $('hero-title').innerHTML='Three breaths <span class="soft">complete.</span>';
-      $('hero-kicker').textContent='A good place to begin';
-      $('hero-lede').textContent='Choose a breathing practice below whenever you are ready. You can return to this short guide at any time.';
-      $('hero-phase').textContent='Well done'; $('hero-phase-count').textContent='Three cycles complete'; $('orb-caption').textContent='You can keep exploring';
-      $('intro-progress-value').style.width='100%'; $('intro-cycle').textContent='Complete'; $('intro-remaining').textContent='36 seconds'; $('orb-serial').textContent='03 / 03';
-      $('pause-intro').style.display='none'; $('restart-intro').innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg><span>Repeat three breaths</span>';
-      $('hero-explore').querySelector('span:last-child').textContent='Continue to the exercise library';
-    }
-    $('begin-intro').addEventListener('click', beginIntro);
-    $('pause-intro').addEventListener('click', pauseIntro);
-    $('restart-intro').addEventListener('click', beginIntro);
-
-    function openPractice(id) {
-      selectedExercise = exercises.find(ex=>ex.id===id); if (!selectedExercise) return;
-      clearInterval(practiceTimer); practiceState='ready'; practicePaused=false; practiceElapsedBeforePause=0;
-      $('practice-category').textContent=selectedExercise.category+' · '+selectedExercise.level;
-      $('session-intention').value=selectedIntention; syncIntention();
-      $('practice-title').textContent=selectedExercise.name;
-      $('practice-description').textContent=selectedExercise.description;
-      $('practice-use').textContent=selectedExercise.bestFor;
-      $('practice-meta').innerHTML='<span class="meta-chip">'+selectedExercise.level+'</span><span class="meta-chip">'+selectedExercise.minutes+'</span><span class="meta-chip">'+selectedExercise.pattern+'</span>';
-      $('skip-holds').checked=false; $('practice-options').style.display=selectedExercise.phases?.some(phase=>phase[2]==='hold') ? 'flex' : 'none'; renderPracticePattern();
-      $('practice-caution').textContent=selectedExercise.caution;
-      $('practice-stage').classList.remove('session-active','session-complete'); $('practice-stage').dataset.phase='rest'; $('practice-phase').textContent='Ready when you are'; $('practice-phase-count').textContent='Choose a duration, then start'; $('session-message').textContent='Let the breath stay easy.';
-      $('session-mode').textContent='Ready to begin'; $('session-clock').textContent= $('session-duration').value+':00';
-      $('practice-start-row').style.display='flex'; $('practice-done').classList.remove('visible');
-      $('practice-screen').classList.add('open'); $('practice-screen').setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
-      $('close-practice').focus();
-    }
-    function closePractice() { stopVoiceGuidance(); clearInterval(practiceTimer); practiceState='ready'; $('practice-stage').classList.remove('session-active','session-complete'); $('practice-screen').classList.remove('open'); $('practice-screen').setAttribute('aria-hidden','true'); document.body.style.overflow=''; if (practiceReturnFocus && practiceReturnFocus.isConnected) practiceReturnFocus.focus(); practiceReturnFocus=null; }
-    $('close-practice').addEventListener('click',closePractice);
-    $('done-close').addEventListener('click',closePractice);
-    $('practice-screen').addEventListener('click',e=>{ if(e.target===$('practice-screen')) closePractice(); });
-    document.addEventListener('keydown',e=>{
-      if (!$('practice-screen').classList.contains('open')) return;
-      if (e.key==='Escape') { closePractice(); return; }
-      if (e.key==='Tab') {
-        const focusable=[...$('practice-screen').querySelectorAll('button:not([disabled]),select:not([disabled]),a[href],input:not([disabled])')].filter(el=>el.offsetParent!==null);
-        if (!focusable.length) return;
-        const first=focusable[0], last=focusable[focusable.length-1];
-        if (e.shiftKey && document.activeElement===first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement===last) { e.preventDefault(); first.focus(); }
-      }
-    });
-
-    function practiceElapsed() { return practiceElapsedBeforePause + (practicePaused ? 0 : performance.now()-practiceStartedAt); }
-    function formatTime(ms) { const s=Math.max(0,Math.ceil(ms/1000)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
-    function getPracticePhases() {
-      if (!selectedExercise || !Array.isArray(selectedExercise.phases)) return null;
-      return $('skip-holds').checked ? selectedExercise.phases.filter(phase=>phase[2]!=='hold') : selectedExercise.phases;
-    }
-    function renderPracticePattern() {
-      const phases=getPracticePhases();
-      $('pattern-flow').innerHTML=(phases && phases.length ? phases : [['Notice the breath',0,'rest']]).map(p=>'<span class="pattern-step">'+p[0]+'<small>'+(p[1] ? p[1]+' seconds' : 'No set count')+'</small></span>').join('<span aria-hidden="true" style="color:var(--muted-2)">→</span>');
-      if($('skip-holds').checked) $('session-message').textContent='Timed holds are skipped. Keep each breath comfortable.';
-    }
-    function phaseForElapsed(elapsed) {
-      const phases=getPracticePhases();
-      if (!phases || !phases.length) {
-        return {label:'Notice the breath',seconds:5,phase:'rest',phaseIndex:-1,remain:null,cycle:Math.floor(elapsed/10000)+1,phaseStart:0};
-      }
-      const cycleDuration=phases.reduce((sum,p)=>sum+Math.max(0,Number(p[1])||0),0)*1000;
-      if (!Number.isFinite(cycleDuration) || cycleDuration<=0) {
-        return {label:'Notice the breath',seconds:5,phase:'rest',phaseIndex:-1,remain:null,cycle:1,phaseStart:0};
-      }
-      const pos=elapsed%cycleDuration;
-      let total=0, activeIndex=0;
-      for(let i=0;i<phases.length;i++){
-        const duration=Math.max(0,Number(phases[i][1])||0)*1000;
-        if(duration>0 && pos<total+duration){ activeIndex=i; break; }
-        total+=duration;
-      }
-      const active=phases[activeIndex];
-      const duration=Math.max(0,Number(active[1])||0)*1000;
-      return {label:active[0],seconds:duration/1000,phase:active[2],phaseIndex:activeIndex,remain:Math.max(1,Math.ceil((total+duration-pos)/1000)),cycle:Math.floor(elapsed/cycleDuration)+1,phaseStart:total};
-    }
-    function updatePractice() {
-      if(practiceState!=='active') return;
-      const elapsed=Math.min(practiceElapsed(),practiceDurationMs); const phase=phaseForElapsed(elapsed);
-      $('practice-stage').dataset.phase=phase.phase; $('practice-stage').style.setProperty('--phase-duration',phase.seconds+'s');
-      $('practice-phase').textContent=phase.label;
-      $('practice-phase-count').textContent=getPracticePhases()?.length ? 'Follow a comfortable rhythm' : 'No count to follow';
-      $('session-mode').textContent=(INTENTIONS[selectedIntention]?.label || 'Settle')+' · '+(getPracticePhases()?.length ? 'Cycle '+phase.cycle : 'Gentle observation');
-      $('session-clock').textContent=formatTime(practiceDurationMs-elapsed);
-      $('session-message').textContent=phase.remain ? phase.remain+' seconds in this phase' : 'Notice the breath without changing it';
-      if(phase.phaseIndex!==practiceLastPhaseIndex){ practiceLastPhase=phase.phase; practiceLastPhaseIndex=phase.phaseIndex; const remainder=phase.remain || 5; $('practice-stage').style.setProperty('--phase-duration',remainder+'s'); playPhaseCue(phase.phase); speakPhase(phase.label); }
-      if(elapsed>=practiceDurationMs) completePractice();
-    }
-    function startPractice() {
-      if(selectedExercise) recordRecent(selectedExercise.id);
-      clearInterval(practiceTimer); practiceDurationMs=Number($('session-duration').value)*60000; practiceElapsedBeforePause=0; practiceStartedAt=performance.now(); practicePaused=false; practiceState='active'; practiceLastPhase=''; practiceLastPhaseIndex=-1;
-      $('practice-start-row').style.display='none'; $('practice-stage').classList.add('session-active'); $('session-pause').setAttribute('aria-label','Pause session');
-      $('session-pause').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg>';
-      updatePractice(); practiceTimer=setInterval(updatePractice,100);
-    }
-    function togglePracticePause() {
-      if(practiceState!=='active' && practiceState!=='paused') return;
-      if(!practicePaused){ stopVoiceGuidance(); practiceElapsedBeforePause += performance.now()-practiceStartedAt; practicePaused=true; practiceState='paused'; clearInterval(practiceTimer); $('session-pause').setAttribute('aria-label','Resume session'); $('session-pause').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="m8 5 12 7-12 7z"/></svg>'; $('practice-phase-count').textContent='Paused'; $('session-message').textContent='Take your time.'; }
-      else { practicePaused=false; practiceStartedAt=performance.now(); practiceState='active'; $('session-pause').setAttribute('aria-label','Pause session'); $('session-pause').innerHTML='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5h3v14H8zm6 0h3v14h-3z"/></svg>'; practiceTimer=setInterval(updatePractice,100); updatePractice(); }
-    }
-    function completePractice(){ stopVoiceGuidance(); clearInterval(practiceTimer); practiceState='complete'; practicePaused=false; $('practice-stage').classList.add('session-complete'); $('practice-stage').dataset.phase='rest'; $('practice-done').classList.add('visible'); $('practice-phase').textContent='Complete'; $('practice-phase-count').textContent='Session finished'; $('session-clock').textContent='0:00'; $('done-close').focus(); }
-    function restartPractice(){ startPractice(); }
-    $('start-practice').addEventListener('click',startPractice);
-    $('session-pause').addEventListener('click',togglePracticePause);
-    $('session-restart').addEventListener('click',restartPractice);
-    $('session-duration').addEventListener('change',()=>{ if(practiceState==='ready') $('session-clock').textContent=$('session-duration').value+':00'; });
-    $('skip-holds').addEventListener('change',()=>{ if(practiceState==='ready') renderPracticePattern(); });
-    $('session-fullscreen').addEventListener('click',async()=>{ try { if(!document.fullscreenElement) await $('practice-stage').requestFullscreen(); else await document.exitFullscreen(); } catch(_) {} });
-    updatePersonalCounts();
-    renderExercises();
-
-    // Progressive enhancement: the core app remains usable if offline features are unavailable.
-    let deferredInstallPrompt = null;
-    const installButton = document.getElementById("install-app");
-    window.addEventListener("beforeinstallprompt", event => {
-      event.preventDefault();
-      deferredInstallPrompt = event;
-      if (installButton) installButton.hidden = false;
-    });
-    if (installButton) installButton.addEventListener("click", async () => {
-      if (!deferredInstallPrompt) return;
-      deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-      deferredInstallPrompt = null;
-      installButton.hidden = true;
-    });
-    window.addEventListener("appinstalled", () => {
-      if (installButton) installButton.hidden = true;
-    });
-    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
-      window.addEventListener("load", () => navigator.serviceWorker.register("./sw.js").catch(() => {}));
-    }
-  </script>
+  </dialog>
 </body>
 </html>

@@ -27,11 +27,16 @@ Open `index.html` in a browser to use the core experience. For testing install a
 
 ## Project files
 
-- `index.html` — the complete app interface and interaction logic
+- `index.html` — page structure, metadata and structured data
+- `assets/css/styles.css` — design tokens and components
+- `assets/js/exercises.js` — the 24 exercises (data)
+- `assets/js/app.js` — breath model, guided sessions, library, preferences
 - `manifest.webmanifest` — install and display settings
 - `sw.js` — app-shell caching for offline use
+- `404.html` — not-found page for GitHub Pages
 - `icon.svg` — app icon
-- `previews/V2/` — approved v2 design reference, notes and test report
+- `DESIGN.md` — v3 design system
+- `previews/V2/` — earlier approved v2 reference, notes and test report
 
 ## Safety note
 
