@@ -248,7 +248,8 @@ svg { display: block; }
   .practice-grid { column-gap: 32px; }
 }
 @media (max-width: 900px) {
-  .library-shell { grid-template-columns: 1fr; gap: 18px; }
+  .library-shell { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .filter-rail { min-width: 0; }
   .filter-rail { position: static; }
   .filter-list { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scroll-snap-type: x proximity; mask-image: linear-gradient(90deg, #000 88%, transparent); }
   .filter-divider { display: none; }

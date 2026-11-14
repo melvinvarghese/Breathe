@@ -72,12 +72,12 @@
     constructor(o) { Object.assign(this, o); this.state = 'idle'; this.before = 0; this.t0 = 0; this.duration = 0; this.model = null; this.key = ''; }
     elapsed() { return this.before + (this.state === 'active' ? performance.now() - this.t0 : 0); }
     start(model, duration) {
-      this.halt(); this.model = model; this.duration = duration; this.before = 0; this.t0 = performance.now(); this.key = ''; this.state = 'active';
+      this.halt(); this.model = model; this.duration = duration; this.before = 0; this.base = this.state === 'active' || this.state === 'paused' ? this.shown : .5; this.t0 = performance.now(); this.key = ''; this.state = 'active';
       this.el.dataset.live = 'true'; this.run(); this.tick();
     }
     pause() { if (this.state !== 'active') return; this.before = this.elapsed(); this.state = 'paused'; this.halt(); this.onPause && this.onPause(); }
     resume() { if (this.state !== 'paused') return; this.t0 = performance.now(); this.state = 'active'; this.run(); this.tick(); this.onResume && this.onResume(); }
-    stop() { this.halt(); this.state = 'idle'; this.el.dataset.live = 'false'; this.el.style.setProperty('--breath', .5); this.el.querySelector('.orb-body').style.setProperty('--breath', .5); }
+    stop() { this.halt(); this.state = 'idle'; this.shown = .5; this.el.dataset.live = 'false'; this.el.style.setProperty('--breath', .5); this.el.querySelector('.orb-body').style.setProperty('--breath', .5); }
     run() {
       const loop = () => { this.tick(); if (this.state === 'active') this.raf = requestAnimationFrame(loop); };
       this.raf = requestAnimationFrame(loop); this.iv = setInterval(() => this.tick(), 250); // interval keeps cues running when the tab is hidden
@@ -86,7 +86,9 @@
     tick() {
       if (this.state !== 'active') return;
       const e = Math.min(this.elapsed(), this.duration), m = this.model;
-      const level = m ? m.levelAt(e) : .5;
+      let level = m ? m.levelAt(e) : .5;
+      if (e < 700) level = this.base + (level - this.base) * ease(e / 700); // glide in from the resting size instead of snapping
+      this.shown = level;
       this.el.querySelector('.orb-body').style.setProperty('--breath', level.toFixed(4));
       const info = m ? m.phaseAt(e) : null;
       if (this.trace) moveTrace(this.trace, e);
@@ -182,7 +184,9 @@
     $('pause-intro').style.display = ''; pauseLabel(false); restartLabel('Start again');
     $('intro-controls').classList.add('visible'); $('intro-progress').classList.add('visible');
     intro.start(introModel, INTRO_MS);
+    $('pause-intro').focus(); // the Begin button just hid; keep keyboard focus in the controls
   }
+  pauseLabel(false); restartLabel('Start again');
   $('begin-intro').addEventListener('click', beginIntro); $('restart-intro').addEventListener('click', beginIntro);
   $('pause-intro').addEventListener('click', () => intro.state === 'active' ? intro.pause() : intro.resume());
 
