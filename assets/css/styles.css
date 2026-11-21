@@ -305,3 +305,41 @@ svg { display: block; }
   .orb-body { transform: scale(calc(.96 + .08 * var(--breath))); }
 }
 @media (forced-colors: active) { .btn, .row-open, .filter-btn[aria-pressed="true"] { border: 1px solid CanvasText; } }
+
+/* Mindful stats bar */
+.mindful-stats { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 18px; padding: 8px 14px; background: color-mix(in srgb, var(--paper-2) 65%, transparent); border: 1px solid var(--line); border-radius: var(--radius-sm); font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.mindful-stats strong { color: var(--ink); font-weight: 600; }
+.stats-sep { color: var(--line-strong); }
+
+/* Soundscape & Hotkeys */
+.soundscape-select { min-height: 44px; height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); font-size: 14px; color: var(--ink-2); background: var(--surface); }
+.keys-hint { flex-basis: 100%; margin: 8px 0 0; font-size: 12px; color: var(--faint); }
+.keys-hint kbd { display: inline-block; padding: 2px 6px; font-family: var(--sans); font-size: 11px; font-weight: 600; background: var(--sunken); border: 1px solid var(--line-strong); border-radius: 4px; color: var(--ink); box-shadow: 0 1px 0 var(--line); }
+
+/* Custom Rhythm Modal */
+.custom-screen { width: min(540px, calc(100% - 32px)); max-height: 90vh; margin: auto; padding: 0; border: 1px solid var(--line-strong); border-radius: 20px; background: var(--paper); color: var(--ink); overflow-y: auto; box-shadow: 0 20px 48px rgba(0,0,0,.22); }
+.custom-screen::backdrop { background: rgba(0,0,0,.45); backdrop-filter: blur(4px); }
+.custom-modal-inner { padding: 32px; }
+.custom-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 6px; }
+.custom-header h2 { font-size: 26px; line-height: 1.1; margin: 0; }
+.custom-lede { color: var(--muted); font-size: 14px; margin: 0 0 22px; }
+.custom-form { display: grid; gap: 16px; }
+.custom-row { display: grid; gap: 6px; }
+.custom-row label, .count-field label { font-size: 13px; font-weight: 600; color: var(--muted); }
+.text-input { height: 46px; padding: 0 14px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-size: 15px; }
+.text-input:focus, .spin-wrap input:focus { border-color: var(--action); outline: 2px solid color-mix(in srgb, var(--action) 35%, transparent); }
+.custom-counts-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.count-field { display: grid; gap: 6px; }
+.spin-wrap { position: relative; display: flex; align-items: center; }
+.spin-wrap input { width: 100%; height: 46px; padding: 0 42px 0 14px; border: 1px solid var(--line-strong); border-radius: var(--radius-sm); background: var(--surface); color: var(--ink); font-size: 16px; font-variant-numeric: tabular-nums; }
+.spin-wrap .unit { position: absolute; right: 12px; font-size: 13px; color: var(--muted); pointer-events: none; }
+.custom-preview-box { padding: 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); display: grid; gap: 6px; text-align: center; }
+.preview-label { font-size: 12px; font-weight: 600; color: var(--muted); text-align: left; }
+.custom-trace { width: 100%; max-width: 360px; height: 48px; margin: 0 auto; overflow: visible; }
+.custom-summary { font-size: 13px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.custom-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+
+/* Visual enhancements */
+html[data-theme="dark"] .orb::before { content: ""; position: absolute; inset: 10%; border-radius: 50%; background: radial-gradient(circle, rgba(107, 184, 174, 0.16) 0%, transparent 70%); pointer-events: none; }
+.trace .t-dot { filter: drop-shadow(0 0 5px var(--inhale)); }
+

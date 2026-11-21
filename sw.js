@@ -1,4 +1,4 @@
-const CACHE_NAME = "breathe-shell-v2";
+const CACHE_NAME = "breathe-shell-v3";
 const APP_SHELL = ["./", "./index.html", "./assets/css/styles.css", "./assets/js/exercises.js", "./assets/js/app.js", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", event => {

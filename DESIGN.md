@@ -23,7 +23,14 @@ Split hero → hairline category index (no cards) → filterable list (sticky ra
 One orchestrated moment on load (hero stagger + orb fade-in). Press feedback `scale(.97)` at 160ms with a strong ease-out. Hover only under `(hover: hover)`. No scroll reveals, no `transition: all`. The breathing motion is driven per frame from the model; under `prefers-reduced-motion` its amplitude is reduced (it is the content) and all decoration is removed.
 
 ## State and URLs
-`?category=`, `?view=`, `?q=` mirror the library filters; `?exercise=<id>` deep-links to a practice. Canonical stays the site root. Storage keys and the backup format (`version: 1`) are unchanged.
+`?category=`, `?view=`, `?q=` mirror the library filters; `?exercise=<id>` deep-links to a practice. Canonical stays the site root. Storage keys and the backup format (`version: 1`) are backward compatible, adding `custom` rhythms and mindful `stats`.
+
+## Sensory, Acoustic & Keyboard Accessibility
+- **Haptic guidance**: Optional gentle vibration pulses at phase boundaries (`navigator.vibrate`) for eyes-closed practice.
+- **Harmonic chime**: Web Audio API dual-partial singing bowl chime replaces harsh single beeps.
+- **Procedural soundscapes**: Low-frequency ocean waves and soft rain generated client-side from pink noise (zero data downloads).
+- **Keyboard shortcuts**: In practice sessions, <kbd>Space</kbd> (pause/resume), <kbd>R</kbd> (restart), <kbd>M</kbd> (toggle audio cues), <kbd>F</kbd> (fullscreen).
+- **Custom rhythms**: Users can dial in custom counts (Inhale, Hold, Exhale, Hold) with live SVG trace previews and save to device.
 
 ## Files
 `index.html` · `assets/css/styles.css` · `assets/js/exercises.js` (data) · `assets/js/app.js` · `sw.js` · `manifest.webmanifest` · `404.html`.

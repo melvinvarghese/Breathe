@@ -109,32 +109,144 @@
   const toggleTheme = () => { root.dataset.theme = root.dataset.theme === 'light' ? 'dark' : 'light'; store.set('breathe-theme', root.dataset.theme); syncTheme(); };
   $('theme-toggle').addEventListener('click', toggleTheme); $('practice-theme-toggle').addEventListener('click', toggleTheme); syncTheme();
 
-  let audioOn = store.get('breathe-audio-cues') === 'on', voiceOn = store.get('breathe-voice-guidance') === 'on', audioCtx = null;
+  let audioOn = store.get('breathe-audio-cues') === 'on', voiceOn = store.get('breathe-voice-guidance') === 'on', hapticsOn = store.get('breathe-haptics') === 'on', audioCtx = null;
   const speechOk = Boolean(window.speechSynthesis && window.SpeechSynthesisUtterance);
+  const hapticOk = typeof navigator !== 'undefined' && 'vibrate' in navigator;
+
+  function pulse(type) {
+    if (!hapticsOn || !hapticOk) return;
+    try {
+      if (type === 'inhale') navigator.vibrate([35]);
+      else if (type === 'hold') navigator.vibrate([20, 40, 20]);
+      else if (type === 'exhale') navigator.vibrate([50]);
+    } catch (_) {}
+  }
+
+  function getAudioCtx() {
+    if (!audioCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) audioCtx = new AC();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
   function syncPrefs() {
     $$('.sound-toggle').forEach(b => { b.setAttribute('aria-pressed', String(audioOn)); setText(b.querySelector('span'), audioOn ? 'Audio cues on' : 'Audio cues off'); });
+    $$('.haptic-toggle').forEach(b => {
+      b.setAttribute('aria-pressed', String(hapticsOn && hapticOk)); b.disabled = !hapticOk;
+      setText(b.querySelector('span'), !hapticOk ? 'Haptics unavailable' : hapticsOn ? 'Haptics on' : 'Haptics off');
+    });
     $$('.voice-toggle').forEach(b => {
       b.setAttribute('aria-pressed', String(voiceOn && speechOk)); b.disabled = !speechOk;
       setText(b.querySelector('span'), !speechOk ? 'Voice unavailable' : voiceOn ? 'Voice guidance on' : 'Voice guidance off');
     });
   }
+
+  /* Harmonic singing bowl bell chime: warm resonant partials */
   function cue(type) {
     if (!audioOn) return;
     try {
-      const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-      audioCtx = audioCtx || new AC(); if (audioCtx.state === 'suspended') audioCtx.resume();
-      const now = audioCtx.currentTime, o = audioCtx.createOscillator(), g = audioCtx.createGain();
-      o.type = 'sine'; o.frequency.setValueAtTime({ inhale: 523.25, hold: 659.25, exhale: 392 }[type] || 440, now);
-      g.gain.setValueAtTime(.0001, now); g.gain.exponentialRampToValueAtTime(.055, now + .025); g.gain.exponentialRampToValueAtTime(.0001, now + .22);
-      o.connect(g); g.connect(audioCtx.destination); o.start(now); o.stop(now + .24);
+      const ctx = getAudioCtx(); if (!ctx) return;
+      const now = ctx.currentTime;
+      const baseFreq = { inhale: 432, hold: 528, exhale: 360 }[type] || 432;
+      [baseFreq, baseFreq * 2.76].forEach((f, idx) => {
+        const o = ctx.createOscillator(), g = ctx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(f, now);
+        const amp = idx === 0 ? 0.075 : 0.022;
+        g.gain.setValueAtTime(0.0001, now);
+        g.gain.exponentialRampToValueAtTime(amp, now + 0.025);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + (idx === 0 ? 1.4 : 0.85));
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.start(now);
+        o.stop(now + 1.45);
+      });
     } catch (_) {}
   }
+
+  /* Procedural soundscapes (pink noise generator without external assets) */
+  let soundscapeNode = null, soundscapeGain = null, soundscapeFilter = null, currentSoundscape = 'none';
+
+  function createNoiseBuffer(ctx, seconds = 4) {
+    const bufferSize = ctx.sampleRate * seconds, buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate), output = buffer.getChannelData(0);
+    let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      b0 = 0.99886 * b0 + white * 0.0555179;
+      b1 = 0.99332 * b1 + white * 0.0750759;
+      b2 = 0.96900 * b2 + white * 0.1538520;
+      b3 = 0.86650 * b3 + white * 0.3104856;
+      b4 = 0.55000 * b4 + white * 0.5329522;
+      b5 = -0.7616 * b5 - white * 0.0168980;
+      output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.05;
+      b6 = white * 0.115926;
+    }
+    return buffer;
+  }
+
+  function startSoundscape(type) {
+    currentSoundscape = type;
+    stopSoundscape();
+    if (type === 'none') return;
+    try {
+      const ctx = getAudioCtx(); if (!ctx) return;
+      const buffer = createNoiseBuffer(ctx, 4);
+      soundscapeNode = ctx.createBufferSource();
+      soundscapeNode.buffer = buffer;
+      soundscapeNode.loop = true;
+
+      soundscapeFilter = ctx.createBiquadFilter();
+      soundscapeGain = ctx.createGain();
+
+      if (type === 'waves') {
+        soundscapeFilter.type = 'lowpass';
+        soundscapeFilter.frequency.setValueAtTime(260, ctx.currentTime);
+        soundscapeGain.gain.setValueAtTime(0.001, ctx.currentTime);
+        soundscapeGain.gain.linearRampToValueAtTime(0.045, ctx.currentTime + 1);
+      } else if (type === 'rain') {
+        soundscapeFilter.type = 'bandpass';
+        soundscapeFilter.frequency.setValueAtTime(800, ctx.currentTime);
+        soundscapeFilter.Q.setValueAtTime(0.7, ctx.currentTime);
+        soundscapeGain.gain.setValueAtTime(0.001, ctx.currentTime);
+        soundscapeGain.gain.linearRampToValueAtTime(0.035, ctx.currentTime + 1);
+      }
+
+      soundscapeNode.connect(soundscapeFilter);
+      soundscapeFilter.connect(soundscapeGain);
+      soundscapeGain.connect(ctx.destination);
+      soundscapeNode.start();
+    } catch (_) {}
+  }
+
+  function updateSoundscapeCycle(level) {
+    if (currentSoundscape === 'waves' && soundscapeFilter && soundscapeGain && audioCtx) {
+      try {
+        const now = audioCtx.currentTime;
+        soundscapeFilter.frequency.setTargetAtTime(220 + level * 360, now, 0.15);
+        soundscapeGain.gain.setTargetAtTime(0.02 + level * 0.05, now, 0.15);
+      } catch (_) {}
+    }
+  }
+
+  function stopSoundscape() {
+    if (soundscapeGain && audioCtx) {
+      try { soundscapeGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.1); } catch (_) {}
+    }
+    if (soundscapeNode) {
+      try { soundscapeNode.stop(audioCtx.currentTime + 0.2); } catch (_) {}
+      soundscapeNode = null;
+    }
+  }
+
   const stopVoice = () => { if (speechOk) speechSynthesis.cancel(); };
   function speak(text) {
     if (!voiceOn || !speechOk || !text) return;
     try { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); u.lang = 'en-US'; u.rate = .88; u.volume = .8; speechSynthesis.speak(u); } catch (_) {}
   }
   $$('.sound-toggle').forEach(b => b.addEventListener('click', () => { audioOn = !audioOn; store.set('breathe-audio-cues', audioOn ? 'on' : 'off'); syncPrefs(); if (audioOn) cue('inhale'); }));
+  $$('.haptic-toggle').forEach(b => b.addEventListener('click', () => { if (!hapticOk) return; hapticsOn = !hapticsOn; store.set('breathe-haptics', hapticsOn ? 'on' : 'off'); syncPrefs(); if (hapticsOn) pulse('inhale'); }));
   $$('.voice-toggle').forEach(b => b.addEventListener('click', () => { if (!speechOk) return; voiceOn = !voiceOn; store.set('breathe-voice-guidance', voiceOn ? 'on' : 'off'); if (!voiceOn) stopVoice(); syncPrefs(); if (voiceOn) speak('Ready when you are'); }));
   syncPrefs();
 
@@ -155,7 +267,7 @@
   const restartLabel = (txt) => { $('restart-intro').innerHTML = icon('restart') + `<span>${txt}</span>`; };
   const intro = new Guide({
     el: $('hero-art'), trace: heroTrace,
-    onPhase(info) { cue(info.seg.type); speak(info.seg.label); },
+    onPhase(info) { cue(info.seg.type); pulse(info.seg.type); speak(info.seg.label); },
     onFrame(e, info) {
       const cycle = Math.min(3, Math.floor(e / 12000) + 1);
       setText(heroLabel.phase, info.seg.label);
@@ -257,10 +369,55 @@
     const o = e.target.closest('[data-open]'); if (o) openPractice(o.dataset.open, o);
   });
 
-  /* Backup / restore (format unchanged: version 1) */
+  /* Mindful practice statistics (stored locally, privacy preserved) */
+  const STATS_KEY = 'breathe:v1:stats';
+  function readStats() {
+    try {
+      const s = JSON.parse(store.get(STATS_KEY));
+      if (s && typeof s.totalSeconds === 'number' && Array.isArray(s.days)) return s;
+    } catch (_) {}
+    return { totalSeconds: 0, sessions: 0, days: [] };
+  }
+  let stats = readStats();
+  function recordSession(seconds) {
+    if (!seconds || seconds < 20) return;
+    const today = new Date().toISOString().slice(0, 10);
+    stats.totalSeconds += Math.round(seconds);
+    stats.sessions += 1;
+    if (!stats.days.includes(today)) stats.days.push(today);
+    store.set(STATS_KEY, JSON.stringify(stats));
+    renderStats();
+  }
+  function renderStats() {
+    const mins = Math.round(stats.totalSeconds / 60);
+    setText($('stats-total-min'), String(mins));
+    setText($('stats-sessions'), String(stats.sessions));
+    setText($('stats-days'), String(stats.days.length));
+  }
+  renderStats();
+
+  /* Custom rhythms (stored locally) */
+  const CUSTOM_KEY = 'breathe:v1:custom';
+  function readCustoms() {
+    try {
+      const arr = JSON.parse(store.get(CUSTOM_KEY));
+      return Array.isArray(arr) ? arr : [];
+    } catch (_) {}
+    return [];
+  }
+  let customExercises = readCustoms();
+  customExercises.forEach(c => {
+    if (!exercises.some(e => e.id === c.id)) exercises.unshift(c);
+  });
+
+  /* Backup / restore (version 1 format compatible) */
   const backupStatus = (m) => setText($('backup-status'), m);
   $('export-data').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify({ app: 'Breathe', version: 1, exportedAt: new Date().toISOString(), favorites: [...favs], recent: recents.slice(0, 20) }, null, 2)], { type: 'application/json' });
+    const blob = new Blob([JSON.stringify({
+      app: 'Breathe', version: 1, exportedAt: new Date().toISOString(),
+      favorites: [...favs], recent: recents.slice(0, 20),
+      custom: customExercises, stats
+    }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = 'breathe-backup-' + new Date().toISOString().slice(0, 10) + '.json';
     document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); backupStatus('Backup downloaded. Keep the file somewhere safe.');
@@ -272,6 +429,18 @@
       if (file.size > 200000) throw new Error('This backup file is too large.');
       const p = JSON.parse(await file.text());
       if (!p || p.app !== 'Breathe' || p.version !== 1 || !Array.isArray(p.favorites) || !Array.isArray(p.recent)) throw new Error('This is not a supported Breathe backup.');
+      
+      if (Array.isArray(p.custom)) {
+        customExercises = p.custom.filter(c => c && typeof c.id === 'string' && Array.isArray(c.phases));
+        store.set(CUSTOM_KEY, JSON.stringify(customExercises));
+        customExercises.forEach(c => { if (!exercises.some(e => e.id === c.id)) exercises.unshift(c); });
+      }
+      if (p.stats && typeof p.stats.totalSeconds === 'number' && Array.isArray(p.stats.days)) {
+        stats = p.stats;
+        store.set(STATS_KEY, JSON.stringify(stats));
+        renderStats();
+      }
+
       const valid = new Set(exercises.map(e => e.id)), seen = new Set();
       const nf = [...new Set(p.favorites.filter(id => typeof id === 'string' && valid.has(id)))];
       const okRecent = (r) => r && typeof r.id === 'string' && valid.has(r.id) && Number.isFinite(r.at);
@@ -302,30 +471,33 @@
   }
   const guide = new Guide({
     el: stage, trace: pTrace,
-    onPhase(info) { const label = info ? info.seg.label : 'Notice the breath'; setText($('practice-phase'), label); if (info) { cue(info.seg.type); speak(label); } },
+    onPhase(info) { const label = info ? info.seg.label : 'Notice the breath'; setText($('practice-phase'), label); if (info) { cue(info.seg.type); pulse(info.seg.type); speak(label); } },
     onFrame(e, info) {
+      updateSoundscapeCycle(guide.shown);
       setText($('session-mode'), INTENTIONS[intention][0] + ' · ' + (info ? 'Cycle ' + info.cycle : 'Gentle observation'));
       setText($('session-clock'), fmt(guide.duration - e));
       setText($('practice-phase-count'), info ? info.remain + (info.remain === 1 ? ' second' : ' seconds') : 'No count to follow');
     },
-    onPause() { stopVoice(); stage.dataset.state = 'paused'; pauseBtn(true); setText($('practice-phase-count'), 'Paused'); },
-    onResume() { stage.dataset.state = 'active'; pauseBtn(false); },
-    onComplete() { stopVoice(); stage.dataset.state = 'complete'; setText($('practice-phase'), 'Complete'); setText($('practice-phase-count'), 'Session finished'); setText($('session-clock'), '0:00'); $('done-close').focus(); }
+    onPause() { stopVoice(); stopSoundscape(); stage.dataset.state = 'paused'; pauseBtn(true); setText($('practice-phase-count'), 'Paused'); },
+    onResume() { stage.dataset.state = 'active'; pauseBtn(false); startSoundscape($('session-soundscape').value); },
+    onComplete() { stopVoice(); stopSoundscape(); recordSession(guide.duration / 1000); stage.dataset.state = 'complete'; setText($('practice-phase'), 'Complete'); setText($('practice-phase-count'), 'Session finished'); setText($('session-clock'), '0:00'); $('done-close').focus(); }
   });
   function startPractice() {
     if (!current) return;
     recents = [{ id: current.id, at: Date.now() }, ...recents.filter(r => r.id !== current.id)].slice(0, 20); saveRecents(); renderFilters();
     renderPattern(); stage.dataset.state = 'active'; pauseBtn(false);
+    startSoundscape($('session-soundscape').value);
     guide.start(pModel, Number($('session-duration').value) * 60000); $('session-pause').focus();
   }
   function openPractice(id, trigger) {
     current = exercises.find(e => e.id === id); if (!current) return;
-    returnFocus = trigger || null; guide.stop(); stopVoice();
+    returnFocus = trigger || null; guide.stop(); stopVoice(); stopSoundscape();
     setText($('practice-category'), current.category + ' · ' + current.level); setText($('practice-title'), current.name); setText($('practice-description'), current.description);
     setText($('practice-use'), current.bestFor); setText($('practice-caution'), current.caution);
     $('practice-meta').innerHTML = [current.level, current.minutes, current.pattern].map(t => `<span class="chip">${t}</span>`).join('');
     const hasHold = Boolean(current.phases && current.phases.some(p => p[2] === 'hold'));
     $('skip-holds').checked = false; $('skip-holds-wrap').hidden = !hasHold; $('hold-note').hidden = !hasHold;
+    $('session-soundscape').value = 'none';
     syncIntention(); renderPattern();
     stage.dataset.state = 'ready'; setText($('practice-phase'), 'Ready when you are'); setText($('practice-phase-count'), 'Choose a duration, then start');
     setText($('session-mode'), 'Ready to begin'); setText($('session-clock'), $('session-duration').value + ':00');
@@ -335,7 +507,7 @@
     const p = new URLSearchParams(location.search); p.set('exercise', id); history.replaceState(null, '', location.pathname + '?' + p + location.hash);
   }
   function cleanup() {
-    guide.stop(); stopVoice(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    guide.stop(); stopVoice(); stopSoundscape(); if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     document.body.style.overflow = ''; document.querySelector('main').inert = false; delete root.dataset.practice;
     const p = new URLSearchParams(location.search); p.delete('exercise'); const qs = p.toString(); history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash);
     if (returnFocus && returnFocus.isConnected) returnFocus.focus(); returnFocus = null;
@@ -349,10 +521,108 @@
   $('session-pause').addEventListener('click', () => guide.state === 'active' ? guide.pause() : guide.resume());
   $('session-duration').addEventListener('change', () => { if (stage.dataset.state === 'ready') setText($('session-clock'), $('session-duration').value + ':00'); });
   $('skip-holds').addEventListener('change', () => { if (stage.dataset.state === 'ready') renderPattern(); });
+  $('session-soundscape').addEventListener('change', () => { if (guide.state === 'active') startSoundscape($('session-soundscape').value); });
   const fsOk = Boolean(document.fullscreenEnabled || document.webkitFullscreenEnabled);
   $('session-fullscreen').hidden = !fsOk;
   $('session-fullscreen').addEventListener('click', async () => {
     try { if (document.fullscreenElement) await document.exitFullscreen(); else await (stage.requestFullscreen || stage.webkitRequestFullscreen).call(stage); } catch (_) {}
+  });
+
+  /* Keyboard shortcuts during practice */
+  document.addEventListener('keydown', e => {
+    if (!dlg.open || (e.target && e.target.matches('input, select, textarea'))) return;
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (stage.dataset.state === 'ready') startPractice();
+      else if (guide.state === 'active') guide.pause();
+      else if (guide.state === 'paused') guide.resume();
+    } else if (e.key === 'r' || e.key === 'R') {
+      e.preventDefault();
+      startPractice();
+    } else if (e.key === 'm' || e.key === 'M') {
+      e.preventDefault();
+      audioOn = !audioOn; store.set('breathe-audio-cues', audioOn ? 'on' : 'off'); syncPrefs(); if (audioOn) cue('inhale');
+    } else if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      $('session-fullscreen').click();
+    }
+  });
+
+  /* Custom Screen Dialog */
+  const customDlg = $('custom-screen'), customTrace = $('custom-trace');
+  const getCustomPhases = () => {
+    const inh = Math.max(1, parseFloat($('count-inhale').value) || 4);
+    const holdIn = Math.max(0, parseFloat($('count-hold-in').value) || 0);
+    const exh = Math.max(1, parseFloat($('count-exhale').value) || 4);
+    const holdOut = Math.max(0, parseFloat($('count-hold-out').value) || 0);
+    const phases = [['Breathe in', inh, 'inhale']];
+    if (holdIn > 0) phases.push(['Hold gently', holdIn, 'hold']);
+    phases.push(['Breathe out', exh, 'exhale']);
+    if (holdOut > 0) phases.push(['Pause gently', holdOut, 'hold']);
+    return { phases, inh, holdIn, exh, holdOut };
+  };
+
+  function updateCustomPreview() {
+    const { phases, inh, holdIn, exh, holdOut } = getCustomPhases();
+    const m = buildModel(phases);
+    drawTrace(customTrace, m, { w: 360, h: 48, pad: 4 });
+    const cycleTotal = inh + holdIn + exh + holdOut;
+    const parts = [inh, holdIn, exh, holdOut].filter((v, i) => i === 0 || i === 2 || v > 0);
+    setText($('custom-summary'), `${parts.join(' · ')} (${cycleTotal}s cycle)`);
+  }
+
+  function openCustomModal() {
+    updateCustomPreview();
+    if (!customDlg.open) customDlg.showModal();
+    $('count-inhale').focus();
+  }
+
+  $('open-custom-creator').addEventListener('click', openCustomModal);
+  $('close-custom').addEventListener('click', () => customDlg.close());
+  $('custom-cancel').addEventListener('click', () => customDlg.close());
+  customDlg.addEventListener('click', e => { if (e.target === customDlg) customDlg.close(); });
+  ['count-inhale', 'count-hold-in', 'count-exhale', 'count-hold-out'].forEach(id => {
+    $(id).addEventListener('input', updateCustomPreview);
+  });
+
+  function createCustomExercise() {
+    const { phases, inh, holdIn, exh, holdOut } = getCustomPhases();
+    const name = ($('custom-name').value.trim() || 'My rhythm').slice(0, 32);
+    const cat = $('custom-category').value;
+    const parts = [inh, holdIn, exh, holdOut].filter((v, i) => i === 0 || i === 2 || v > 0);
+    const id = 'custom-' + Date.now().toString(36);
+    return {
+      id,
+      name,
+      category: cat,
+      description: `A custom ${parts.join(' · ')} breathing rhythm.`,
+      bestFor: "Your custom rhythm tuned to your personal pace",
+      level: "Personal",
+      pattern: parts.join(' · '),
+      phases,
+      caution: "Keep the breath comfortable. Stop if you feel strained or light-headed.",
+      minutes: "1–5 min",
+      custom: true
+    };
+  }
+
+  $('custom-save-start').addEventListener('click', () => {
+    const ex = createCustomExercise();
+    if (!exercises.some(e => e.id === ex.id)) exercises.unshift(ex);
+    customExercises.unshift(ex);
+    store.set(CUSTOM_KEY, JSON.stringify(customExercises.slice(0, 20)));
+    customDlg.close();
+    renderExercises();
+    openPractice(ex.id, $('open-custom-creator'));
+  });
+
+  $('custom-save').addEventListener('click', () => {
+    const ex = createCustomExercise();
+    if (!exercises.some(e => e.id === ex.id)) exercises.unshift(ex);
+    customExercises.unshift(ex);
+    store.set(CUSTOM_KEY, JSON.stringify(customExercises.slice(0, 20)));
+    customDlg.close();
+    renderExercises();
   });
 
   /* ---------- Boot ---------- */

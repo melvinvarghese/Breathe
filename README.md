@@ -8,12 +8,16 @@ A quiet, browser-based space for guided breathing exercises. Breathe is designed
 
 - A glass-orb breathing guide with inhale, pause and exhale phases
 - An optional three-cycle introduction that can be paused, restarted or skipped
-- 24 starter exercises across six categories
+- 28 guided exercises across six categories (including resonant HRV, triangle breathing, and sleep rhythms)
+- Custom rhythm creator to dial in personal counts with real-time SVG shape preview
+- Procedural ambient soundscapes (ocean waves, gentle rain) and resonant singing-bowl chimes via Web Audio API (zero audio downloads)
+- Tactile haptic guidance on supported devices for eyes-closed practice
 - Search and category filtering
-- Focused practice sessions with adjustable duration, pause, restart and fullscreen controls
-- Optional audio cues and spoken phase guidance
-- Light and dark themes
-- Recent-practice details stored locally in the browser
+- Focused practice sessions with adjustable duration (1–20 min), pause, restart, fullscreen, and keyboard shortcuts (`Space`, `R`, `M`, `F`)
+- Gentle, guilt-free mindful practice statistics stored privately in local storage
+- Optional audio cues, voice guidance, and haptics
+- Light and dark themes with enhanced dark-mode orb contrast
+- Recent-practice details, favorites, custom patterns, and data backup/restore
 - Installable web-app support and an offline app shell on supported browsers
 - Keyboard navigation and reduced-motion support
 
