@@ -4,6 +4,7 @@
   const $ = (id) => document.getElementById(id);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
   const setText = (el, txt) => { if (el && el.textContent !== txt) el.textContent = txt; };
+  const escapeHTML = (str) => String(str || '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m]));
   const icon = (name, cls = '') => `<svg class="icon ${cls}" aria-hidden="true"><use href="#i-${name}"/></svg>`;
   const store = {
     get(k) { try { return localStorage.getItem(k); } catch (_) { return null; } },
@@ -347,9 +348,10 @@
     const list = src.filter(e => (view !== 'All' || filter === 'All' || e.category === filter) && (!term || (e.name + ' ' + e.description + ' ' + e.bestFor + ' ' + e.category + ' ' + e.pattern + ' ' + e.level).toLowerCase().includes(term)));
     $('exercise-list').innerHTML = list.map(ex => {
       const fav = favs.has(ex.id);
-      return `<article class="row"><div><h3 class="row-name">${ex.name}</h3><p class="row-desc">${ex.description}</p><p class="row-use">Good for: ${ex.bestFor}</p></div>${rowShape(ex)}<span class="row-tag">${ex.category}</span>` +
-        `<button class="fav" type="button" data-favorite="${ex.id}" aria-pressed="${fav}" aria-label="${fav ? 'Remove' : 'Add'} ${ex.name} ${fav ? 'from' : 'to'} favourites" title="${fav ? 'Remove from' : 'Add to'} favourites"><svg class="icon${fav ? ' fill' : ''}" aria-hidden="true"><use href="#i-heart"/></svg></button>` +
-        `<button class="row-open" type="button" data-open="${ex.id}" aria-label="Open ${ex.name}">View practice</button></article>`;
+      const safeName = escapeHTML(ex.name);
+      return `<article class="row"><div><h3 class="row-name">${safeName}</h3><p class="row-desc">${escapeHTML(ex.description)}</p><p class="row-use">Good for: ${escapeHTML(ex.bestFor)}</p></div>${rowShape(ex)}<span class="row-tag">${escapeHTML(ex.category)}</span>` +
+        `<button class="fav" type="button" data-favorite="${ex.id}" aria-pressed="${fav}" aria-label="${fav ? 'Remove' : 'Add'} ${safeName} ${fav ? 'from' : 'to'} favourites" title="${fav ? 'Remove from' : 'Add to'} favourites"><svg class="icon${fav ? ' fill' : ''}" aria-hidden="true"><use href="#i-heart"/></svg></button>` +
+        `<button class="row-open" type="button" data-open="${ex.id}" aria-label="Open ${safeName}">View practice</button></article>`;
     }).join('');
     setText($('result-count'), list.length + (list.length === 1 ? ' practice' : ' practices'));
     const empty = $('empty-state'); empty.hidden = list.length > 0;
@@ -431,7 +433,14 @@
       if (!p || p.app !== 'Breathe' || p.version !== 1 || !Array.isArray(p.favorites) || !Array.isArray(p.recent)) throw new Error('This is not a supported Breathe backup.');
       
       if (Array.isArray(p.custom)) {
-        customExercises = p.custom.filter(c => c && typeof c.id === 'string' && Array.isArray(c.phases));
+        customExercises = p.custom
+          .filter(c => c && typeof c.id === 'string' && typeof c.name === 'string' && Array.isArray(c.phases))
+          .map(c => ({
+            ...c,
+            name: escapeHTML(c.name).slice(0, 32),
+            description: escapeHTML(c.description || '').slice(0, 100),
+            category: ['Settle', 'Focus', 'Rest', 'Awareness', 'Energy', 'Techniques'].includes(c.category) ? c.category : 'Settle'
+          }));
         store.set(CUSTOM_KEY, JSON.stringify(customExercises));
         customExercises.forEach(c => { if (!exercises.some(e => e.id === c.id)) exercises.unshift(c); });
       }
